@@ -1,51 +1,50 @@
-import { useState } from "react";
-import reactLogo from "./assets/react.svg";
-import { invoke } from "@tauri-apps/api/core";
+import { useEditor } from "@tiptap/react";
+import StarterKit from "@tiptap/starter-kit";
+import Highlight from "@tiptap/extension-highlight";
+import Placeholder from "@tiptap/extension-placeholder";
+import CharacterCount from "@tiptap/extension-character-count";
+
+import Toolbar from "./components/Toolbar";
+import Editor from "./components/Editor";
+import StatusBar from "./components/StatusBar";
 import "./App.css";
 
-function App() {
-  const [greetMsg, setGreetMsg] = useState("");
-  const [name, setName] = useState("");
+export default function App() {
+  // Configure and initialize the TipTap rich-text editor instance
+  const editor = useEditor({
+    extensions: [
+      // StarterKit provides standard marks & nodes (Bold, Italic, Paragraphs, History, etc.)
+      StarterKit,
 
-  async function greet() {
-    // Learn more about Tauri commands at https://tauri.app/develop/calling-rust/
-    setGreetMsg(await invoke("greet", { name }));
-  }
+      // Highlight extension with multi-color support enabled
+      Highlight.configure({
+        multicolor: true,
+      }),
+
+      // Placeholder extension showing guiding text when document is blank
+      Placeholder.configure({
+        placeholder: "Start writing...",
+      }),
+
+      // CharacterCount extension for live word and character tracking
+      CharacterCount,
+    ],
+    // Starting content of our notepad
+    content: "",
+    // immediatelyRender: false ensures smooth hydration and prevents StrictMode warnings in React 19
+    immediatelyRender: false,
+  });
 
   return (
-    <main className="container">
-      <h1>Welcome to Tauri + React</h1>
+    <div className="app-container">
+      {/* Top formatting & action toolbar */}
+      <Toolbar editor={editor} />
 
-      <div className="row">
-        <a href="https://vite.dev" target="_blank">
-          <img src="/vite.svg" className="logo vite" alt="Vite logo" />
-        </a>
-        <a href="https://tauri.app" target="_blank">
-          <img src="/tauri.svg" className="logo tauri" alt="Tauri logo" />
-        </a>
-        <a href="https://react.dev" target="_blank">
-          <img src={reactLogo} className="logo react" alt="React logo" />
-        </a>
-      </div>
-      <p>Click on the Tauri, Vite, and React logos to learn more.</p>
+      {/* Main rich-text editor viewport */}
+      <Editor editor={editor} />
 
-      <form
-        className="row"
-        onSubmit={(e) => {
-          e.preventDefault();
-          greet();
-        }}
-      >
-        <input
-          id="greet-input"
-          onChange={(e) => setName(e.currentTarget.value)}
-          placeholder="Enter a name..."
-        />
-        <button type="submit">Greet</button>
-      </form>
-      <p>{greetMsg}</p>
-    </main>
+      {/* Bottom status bar for statistics */}
+      <StatusBar editor={editor} />
+    </div>
   );
 }
-
-export default App;

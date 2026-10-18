@@ -22,3 +22,7 @@ dist-ssr
 *.njsproj
 *.sln
 *.sw?
+
+# Local project documentation
+PROJECT_CONTEXT.md
+SUMMARY.md
