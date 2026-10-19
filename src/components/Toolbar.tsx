@@ -110,7 +110,7 @@ const TEXT_COLORS = [
   { name: "Rose Pink", value: "#db2777", preview: "#db2777", checkColor: "text-white" },
 ];
 
-// 4 distinct highlight swatches matching design tokens
+// 8 distinct highlight swatches matching design tokens
 const HIGHLIGHT_COLORS = [
   {
     name: "Yellow",
@@ -139,6 +139,34 @@ const HIGHLIGHT_COLORS = [
     cssVar: "var(--highlight-blue)",
     activeRing: "ring-sky-400/80 shadow-[0_0_8px_rgba(96,165,250,0.35)]",
     checkColor: "text-sky-800",
+  },
+  {
+    name: "Red",
+    value: "#fca5a5",
+    cssVar: "var(--highlight-red)",
+    activeRing: "ring-rose-400/80 shadow-[0_0_8px_rgba(251,113,133,0.35)]",
+    checkColor: "text-rose-800",
+  },
+  {
+    name: "Orange",
+    value: "#fed7aa",
+    cssVar: "var(--highlight-orange)",
+    activeRing: "ring-orange-400/80 shadow-[0_0_8px_rgba(251,146,60,0.35)]",
+    checkColor: "text-orange-800",
+  },
+  {
+    name: "Purple",
+    value: "#e9d5ff",
+    cssVar: "var(--highlight-purple)",
+    activeRing: "ring-purple-400/80 shadow-[0_0_8px_rgba(192,132,252,0.35)]",
+    checkColor: "text-purple-800",
+  },
+  {
+    name: "Black",
+    value: "#0f172a",
+    cssVar: "var(--highlight-black)",
+    activeRing: "ring-slate-900/80 shadow-[0_0_8px_rgba(15,23,42,0.4)]",
+    checkColor: "text-white",
   },
 ];
 
@@ -463,7 +491,7 @@ export default function Toolbar({ editor }: ToolbarProps) {
           </div>
 
           {/* Highlight Color Pickers */}
-          <div className="flex items-center gap-1.5 pl-0.5">
+          <div className="flex items-center gap-1 pl-0.5">
             {HIGHLIGHT_COLORS.map((color) => {
               const isCurrentColorActive = activeHighlightColor === color.value;
 
@@ -471,6 +499,7 @@ export default function Toolbar({ editor }: ToolbarProps) {
                 <button
                   key={color.name}
                   type="button"
+                  onMouseDown={(e) => e.preventDefault()}
                   onClick={() =>
                     editor
                       .chain()
@@ -478,7 +507,7 @@ export default function Toolbar({ editor }: ToolbarProps) {
                       .toggleHighlight({ color: color.value })
                       .run()
                   }
-                  className={`w-6 h-6 rounded-full flex items-center justify-center cursor-pointer transition-all duration-150 hover:scale-110 active:scale-90 ${
+                  className={`w-6 h-6 rounded-full flex items-center justify-center cursor-pointer transition-all duration-150 hover:scale-110 active:scale-90 outline-none select-none ${
                     isCurrentColorActive
                       ? `ring-2 ring-offset-1.5 ring-offset-surface ${color.activeRing} scale-105`
                       : "border border-black/10 hover:shadow-2xs"

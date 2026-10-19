@@ -42,9 +42,9 @@
   outline: none;
 }
 
-/* Paragraph spacing */
+/* Paragraph spacing - balanced notepad rhythm */
 .tiptap p {
-  margin: 0 0 1em 0;
+  margin: 0 0 0.25em 0;
 }
 
 .tiptap p:last-child {
@@ -91,7 +91,7 @@
 .tiptap ul,
 .tiptap ol {
   padding-left: 1.5rem;
-  margin: 0.75em 0;
+  margin: 0.35em 0;
 }
 
 .tiptap ul {
@@ -103,7 +103,11 @@
 }
 
 .tiptap li {
-  margin-bottom: 0.25em;
+  margin-bottom: 0.2em;
+}
+
+.tiptap li:last-child {
+  margin-bottom: 0;
 }
 
 .tiptap li p {
@@ -162,4 +166,13 @@
   border-radius: var(--radius-sm);
   box-decoration-break: clone;
   -webkit-box-decoration-break: clone;
+}
+
+/* Ensure white text on dark highlight (Black / Slate) */
+.tiptap mark[data-color="#0f172a"],
+.tiptap mark[style*="background-color: #0f172a"],
+.tiptap mark[style*="background-color: rgb(15, 23, 42)"],
+.tiptap mark[style*="background-color: #000000"],
+.tiptap mark[style*="background-color: rgb(0, 0, 0)"] {
+  color: #ffffff;
 }

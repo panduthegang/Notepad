@@ -29,11 +29,15 @@
   --hover: #f1f5f9;
   --active: #e2e8f0;
 
-  /* Highlight Swatches (Pastel Palette) */
+  /* Highlight Swatches (Pastel & Modern Palette) */
   --highlight-yellow: #fef08a;
   --highlight-green: #bbf7d0;
   --highlight-pink: #fbcfe8;
   --highlight-blue: #bfdbfe;
+  --highlight-red: #fca5a5;
+  --highlight-orange: #fed7aa;
+  --highlight-purple: #e9d5ff;
+  --highlight-black: #0f172a;
 
   /* Border Radius */
   --radius-sm: 4px;
@@ -68,6 +72,10 @@
   --color-highlight-green: var(--highlight-green);
   --color-highlight-pink: var(--highlight-pink);
   --color-highlight-blue: var(--highlight-blue);
+  --color-highlight-red: var(--highlight-red);
+  --color-highlight-orange: var(--highlight-orange);
+  --color-highlight-purple: var(--highlight-purple);
+  --color-highlight-black: var(--highlight-black);
 
   /* Radii */
   --radius-sm: var(--radius-sm);
