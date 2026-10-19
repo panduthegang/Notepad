@@ -12,30 +12,16 @@ jobs:
     permissions:
       contents: write
 
-    strategy:
-      fail-fast: false
-      matrix:
-        include:
-          # Windows
-          - platform: windows-latest
-            args: ""
-
-          # macOS universal binary (Apple Silicon + Intel)
-          - platform: macos-latest
-            args: "--target universal-apple-darwin"
-
-    runs-on: ${{ matrix.platform }}
+    runs-on: windows-latest
 
     steps:
       # 1. Checkout source
       - name: Checkout repository
         uses: actions/checkout@v4
 
-      # 2. Rust toolchain (macOS needs both targets for universal binary)
+      # 2. Rust toolchain
       - name: Install Rust stable
         uses: dtolnay/rust-toolchain@stable
-        with:
-          targets: ${{ matrix.platform == 'macos-latest' && 'aarch64-apple-darwin,x86_64-apple-darwin' || '' }}
 
       # 3. Rust dependency cache
       - name: Cache Rust dependencies
@@ -54,7 +40,7 @@ jobs:
       - name: Install frontend dependencies
         run: npm ci
 
-      # 6. Build and publish to GitHub Release
+      # 6. Build and publish Windows installer to GitHub Release
       - name: Build and publish Tauri app
         uses: tauri-apps/tauri-action@v0
         env:
@@ -66,4 +52,3 @@ jobs:
             See the commits since the previous release for what changed in this version.
           releaseDraft: false
           prerelease: false
-          args: ${{ matrix.args }}
