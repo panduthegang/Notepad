@@ -8,7 +8,7 @@
 .tiptap,
 .ProseMirror {
   outline: none;
-  min-height: 400px;
+  min-height: 100%;
   font-size: 15px;
   line-height: 1.7;
   color: var(--text);

@@ -1,4 +1,5 @@
-import { Editor } from "@tiptap/react";
+import { Editor, useEditorState } from "@tiptap/react";
+import { Undo, Redo } from "lucide-react";
 
 interface ToolbarProps {
   // editor instance passed down from App
@@ -14,10 +15,43 @@ const HIGHLIGHT_COLORS = [
 ];
 
 export default function Toolbar({ editor }: ToolbarProps) {
+  // Subscribe Toolbar to editor state changes (history, active marks, selection)
+  // so Undo, Redo, Bold, Italic, and Swatches dynamically update.
+  const toolbarState = useEditorState({
+    editor,
+    selector: (ctx) => {
+      if (!ctx.editor) {
+        return {
+          canUndo: false,
+          canRedo: false,
+          isBold: false,
+          isItalic: false,
+          activeHighlightColor: undefined as string | undefined,
+          isHighlightActive: false,
+        };
+      }
+      return {
+        canUndo: ctx.editor.can().undo(),
+        canRedo: ctx.editor.can().redo(),
+        isBold: ctx.editor.isActive("bold"),
+        isItalic: ctx.editor.isActive("italic"),
+        activeHighlightColor: ctx.editor.getAttributes("highlight")?.color as string | undefined,
+        isHighlightActive: ctx.editor.isActive("highlight"),
+      };
+    },
+  });
+
   // If the editor is not yet initialized, render a disabled placeholder toolbar
   if (!editor) {
     return <div className="toolbar flex-none h-12 bg-toolbar border-b border-border" />;
   }
+
+  const canUndo = toolbarState?.canUndo ?? false;
+  const canRedo = toolbarState?.canRedo ?? false;
+  const isBold = toolbarState?.isBold ?? false;
+  const isItalic = toolbarState?.isItalic ?? false;
+  const activeHighlightColor = toolbarState?.activeHighlightColor;
+  const isHighlightActive = toolbarState?.isHighlightActive ?? false;
 
   return (
     <div className="toolbar flex-none flex items-center gap-1.5 px-4 py-2 bg-toolbar border-b border-border select-none">
@@ -26,20 +60,22 @@ export default function Toolbar({ editor }: ToolbarProps) {
         <button
           type="button"
           onClick={() => editor.chain().focus().undo().run()}
-          disabled={!editor.can().chain().focus().undo().run()}
-          className="toolbar-btn inline-flex items-center justify-center min-w-8 h-8 px-2 text-[13px] font-medium rounded-md border border-transparent bg-surface text-text hover:bg-hover hover:border-border transition-colors disabled:opacity-40 disabled:cursor-not-allowed cursor-pointer"
+          disabled={!canUndo}
+          className="toolbar-btn inline-flex items-center justify-center w-8 h-8 rounded-md border border-transparent bg-surface text-text hover:bg-hover hover:border-border transition-colors disabled:opacity-40 disabled:cursor-not-allowed cursor-pointer"
           title="Undo (Ctrl+Z)"
+          aria-label="Undo"
         >
-          Undo
+          <Undo size={16} />
         </button>
         <button
           type="button"
           onClick={() => editor.chain().focus().redo().run()}
-          disabled={!editor.can().chain().focus().redo().run()}
-          className="toolbar-btn inline-flex items-center justify-center min-w-8 h-8 px-2 text-[13px] font-medium rounded-md border border-transparent bg-surface text-text hover:bg-hover hover:border-border transition-colors disabled:opacity-40 disabled:cursor-not-allowed cursor-pointer"
+          disabled={!canRedo}
+          className="toolbar-btn inline-flex items-center justify-center w-8 h-8 rounded-md border border-transparent bg-surface text-text hover:bg-hover hover:border-border transition-colors disabled:opacity-40 disabled:cursor-not-allowed cursor-pointer"
           title="Redo (Ctrl+Y)"
+          aria-label="Redo"
         >
-          Redo
+          <Redo size={16} />
         </button>
       </div>
 
@@ -50,9 +86,8 @@ export default function Toolbar({ editor }: ToolbarProps) {
         <button
           type="button"
           onClick={() => editor.chain().focus().toggleBold().run()}
-          disabled={!editor.can().chain().focus().toggleBold().run()}
           className={`toolbar-btn inline-flex items-center justify-center min-w-8 h-8 px-2 text-[13px] font-medium rounded-md border border-transparent transition-colors disabled:opacity-40 disabled:cursor-not-allowed cursor-pointer ${
-            editor.isActive("bold")
+            isBold
               ? "bg-active border-accent text-accent-active font-semibold"
               : "bg-surface text-text hover:bg-hover hover:border-border"
           }`}
@@ -63,9 +98,8 @@ export default function Toolbar({ editor }: ToolbarProps) {
         <button
           type="button"
           onClick={() => editor.chain().focus().toggleItalic().run()}
-          disabled={!editor.can().chain().focus().toggleItalic().run()}
           className={`toolbar-btn inline-flex items-center justify-center min-w-8 h-8 px-2 text-[13px] font-medium rounded-md border border-transparent transition-colors disabled:opacity-40 disabled:cursor-not-allowed cursor-pointer ${
-            editor.isActive("italic")
+            isItalic
               ? "bg-active border-accent text-accent-active font-semibold"
               : "bg-surface text-text hover:bg-hover hover:border-border"
           }`}
@@ -81,8 +115,8 @@ export default function Toolbar({ editor }: ToolbarProps) {
       <div className="toolbar-group flex items-center gap-1">
         <span className="toolbar-label text-[13px] font-medium text-muted mr-1">Highlight:</span>
         {HIGHLIGHT_COLORS.map((color) => {
-          // Check if the current selection already has this specific highlight color
-          const isCurrentColorActive = editor.isActive("highlight", { color: color.value });
+          // Check if current selection has this color
+          const isCurrentColorActive = activeHighlightColor === color.value;
 
           return (
             <button
@@ -107,7 +141,7 @@ export default function Toolbar({ editor }: ToolbarProps) {
         <button
           type="button"
           onClick={() => editor.chain().focus().unsetHighlight().run()}
-          disabled={!editor.isActive("highlight")}
+          disabled={!isHighlightActive}
           className="toolbar-btn text-btn inline-flex items-center justify-center h-8 px-2 text-xs font-medium rounded-md border border-transparent bg-surface text-text hover:bg-hover hover:border-border transition-colors disabled:opacity-40 disabled:cursor-not-allowed cursor-pointer"
           title="Remove highlight"
         >
