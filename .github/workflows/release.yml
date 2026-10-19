@@ -22,7 +22,7 @@ jobs:
 
           # macOS universal binary (Apple Silicon + Intel)
           - platform: macos-latest
-            args: "--target universal-apple-darwin"
+            args: "--target universal-apple-darwin --bundles dmg"
 
     runs-on: ${{ matrix.platform }}
 
