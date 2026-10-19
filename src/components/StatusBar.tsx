@@ -1,7 +1,8 @@
 import { Editor, useEditorState } from "@tiptap/react";
+import { openUrl } from "@tauri-apps/plugin-opener";
+import { FileText, Hash, ExternalLink } from "lucide-react";
 
 interface StatusBarProps {
-  // editor instance passed down from App
   editor: Editor | null;
 }
 
@@ -25,14 +26,48 @@ export default function StatusBar({ editor }: StatusBarProps) {
   const words = counts?.words ?? 0;
   const characters = counts?.characters ?? 0;
 
+  const handlePortfolioClick = async () => {
+    try {
+      await openUrl("https://harshrathod-portfolio.vercel.app");
+    } catch (e) {
+      console.error("Failed to open URL:", e);
+    }
+  };
+
   return (
-    <footer className="status-bar flex-none flex items-center px-4 py-1.5 text-xs text-muted bg-statusbar border-t border-border select-none">
-      <div className="status-item flex items-center gap-1">
-        <span className="font-semibold text-text">{words}</span> {words === 1 ? "word" : "words"}
+    <footer className="status-bar flex-none flex items-center justify-between px-4 py-1.5 bg-statusbar border-t border-border select-none">
+      {/* Left: word & character counts */}
+      <div className="flex items-center gap-3">
+        <div className="flex items-center gap-1.5 text-xs text-muted">
+          <FileText size={12} strokeWidth={2} className="text-muted/70 shrink-0" />
+          <span className="font-semibold text-text tabular-nums">{words}</span>
+          <span>{words === 1 ? "word" : "words"}</span>
+        </div>
+        <div className="w-px h-3.5 bg-border" />
+        <div className="flex items-center gap-1.5 text-xs text-muted">
+          <Hash size={12} strokeWidth={2} className="text-muted/70 shrink-0" />
+          <span className="font-semibold text-text tabular-nums">{characters}</span>
+          <span>{characters === 1 ? "character" : "characters"}</span>
+        </div>
       </div>
-      <div className="status-divider w-px h-3.5 bg-border mx-3" />
-      <div className="status-item flex items-center gap-1">
-        <span className="font-semibold text-text">{characters}</span> {characters === 1 ? "character" : "characters"}
+
+      {/* Right: portfolio credit */}
+      <div className="flex items-center gap-1 text-[11px] text-muted">
+        <span>Designed &amp; developed by</span>
+        <button
+          type="button"
+          onClick={handlePortfolioClick}
+          className="inline-flex items-center gap-0.5 font-semibold text-text/70 hover:text-text transition-colors duration-150 cursor-pointer group outline-none"
+          title="Visit Harsh Rathod's portfolio"
+          aria-label="Open Harsh Rathod's portfolio"
+        >
+          Harsh Rathod
+          <ExternalLink
+            size={10}
+            strokeWidth={2}
+            className="opacity-0 group-hover:opacity-70 transition-opacity duration-150 shrink-0"
+          />
+        </button>
       </div>
     </footer>
   );
