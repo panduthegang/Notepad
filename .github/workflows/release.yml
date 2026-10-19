@@ -1,20 +1,19 @@
 name: Release HRNote
 
-# Triggers on every pushed tag matching v* (e.g. v0.1.0, v1.1.0, v2.0.0-beta)
+# Triggers on every pushed tag matching v* (e.g. v1.1.0, v1.2.0)
 on:
   push:
     tags:
       - "v*"
-  # Allow manual trigger from the Actions tab for testing
   workflow_dispatch:
 
 jobs:
   publish-tauri:
     permissions:
-      contents: write   # required to create/edit GitHub Releases
+      contents: write
 
     strategy:
-      fail-fast: false   # keep building other platforms even if one fails
+      fail-fast: false
       matrix:
         include:
           # Windows
@@ -25,10 +24,6 @@ jobs:
           - platform: macos-latest
             args: "--target universal-apple-darwin"
 
-          # Linux
-          - platform: ubuntu-22.04
-            args: ""
-
     runs-on: ${{ matrix.platform }}
 
     steps:
@@ -36,48 +31,30 @@ jobs:
       - name: Checkout repository
         uses: actions/checkout@v4
 
-      # 2. Install Linux system dependencies (Tauri v2 requirements)
-      - name: Install Linux dependencies
-        if: matrix.platform == 'ubuntu-22.04'
-        run: |
-          sudo apt-get update
-          sudo apt-get install -y \
-            build-essential \
-            curl \
-            wget \
-            file \
-            libssl-dev \
-            libgtk-3-dev \
-            libwebkit2gtk-4.1-dev \
-            libjavascriptcoregtk-4.1-dev \
-            libsoup-3.0-dev \
-            librsvg2-dev \
-            patchelf
-
-      # 3. Rust toolchain
+      # 2. Rust toolchain (macOS needs both targets for universal binary)
       - name: Install Rust stable
         uses: dtolnay/rust-toolchain@stable
         with:
           targets: ${{ matrix.platform == 'macos-latest' && 'aarch64-apple-darwin,x86_64-apple-darwin' || '' }}
 
-      # 4. Rust dependency cache
+      # 3. Rust dependency cache
       - name: Cache Rust dependencies
         uses: swatinem/rust-cache@v2
         with:
           workspaces: "./src-tauri -> target"
 
-      # 5. Node.js
+      # 4. Node.js
       - name: Setup Node.js
         uses: actions/setup-node@v4
         with:
           node-version: "lts/*"
           cache: "npm"
 
-      # 6. Install JS dependencies
+      # 5. Install JS dependencies
       - name: Install frontend dependencies
         run: npm ci
 
-      # 7. Build and publish to GitHub Release
+      # 6. Build and publish to GitHub Release
       - name: Build and publish Tauri app
         uses: tauri-apps/tauri-action@v0
         env:
