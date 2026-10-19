@@ -36,7 +36,7 @@ export default function App() {
   });
 
   return (
-    <div className="app-container">
+    <div className="flex flex-col h-screen w-screen overflow-hidden bg-background text-text">
       {/* Top formatting & action toolbar */}
       <Toolbar editor={editor} />
 

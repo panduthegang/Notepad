@@ -1,0 +1,117 @@
+@import "tailwindcss";
+
+/* ==========================================================================
+   Design Tokens (CSS Variables)
+   These CSS variables define the visual foundation of HRNote.
+   They can be easily overridden for dark mode or custom themes.
+   ========================================================================== */
+:root {
+  /* Font Family */
+  --font-family: "Inter Variable", system-ui, -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, sans-serif;
+
+  /* Background & Surface Colors */
+  --background: #f8fafc;
+  --surface: #ffffff;
+  --toolbar: #ffffff;
+  --statusbar: #f1f5f9;
+
+  /* Typography Colors */
+  --text: #0f172a;
+  --text-muted: #64748b;
+  --placeholder: #94a3b8;
+
+  /* Border Color */
+  --border: #e2e8f0;
+
+  /* Accent & Interactive States */
+  --accent: #3b82f6;
+  --accent-active: #1d4ed8;
+  --hover: #f1f5f9;
+  --active: #e2e8f0;
+
+  /* Highlight Swatches (Pastel Palette) */
+  --highlight-yellow: #fef08a;
+  --highlight-green: #bbf7d0;
+  --highlight-pink: #fbcfe8;
+  --highlight-blue: #bfdbfe;
+
+  /* Border Radius */
+  --radius-sm: 4px;
+  --radius-md: 6px;
+  --radius-lg: 8px;
+}
+
+/* ==========================================================================
+   Tailwind Theme Registration
+   Registers our design tokens into Tailwind CSS v4's theme system so that
+   utility classes like `bg-surface`, `text-muted`, and `border-border` work.
+   ========================================================================== */
+@theme {
+  --font-sans: "Inter Variable", system-ui, -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, sans-serif;
+
+  /* Colors mapped from CSS variables */
+  --color-background: var(--background);
+  --color-surface: var(--surface);
+  --color-toolbar: var(--toolbar);
+  --color-statusbar: var(--statusbar);
+  --color-border: var(--border);
+  --color-text: var(--text);
+  --color-muted: var(--text-muted);
+  --color-placeholder: var(--placeholder);
+  --color-accent: var(--accent);
+  --color-accent-active: var(--accent-active);
+  --color-hover: var(--hover);
+  --color-active: var(--active);
+
+  /* Highlight colors */
+  --color-highlight-yellow: var(--highlight-yellow);
+  --color-highlight-green: var(--highlight-green);
+  --color-highlight-pink: var(--highlight-pink);
+  --color-highlight-blue: var(--highlight-blue);
+
+  /* Radii */
+  --radius-sm: var(--radius-sm);
+  --radius-md: var(--radius-md);
+  --radius-lg: var(--radius-lg);
+}
+
+/* ==========================================================================
+   Future Dark Theme ([data-theme="dark"])
+   Leave empty for now. Tokens above will be customized here in Phase 4.
+   ========================================================================== */
+[data-theme="dark"] {
+  /* Future dark mode token overrides will be added here */
+}
+
+/* ==========================================================================
+   Base Styles
+   Window management, font smoothing, and text selection behavior.
+   ========================================================================== */
+html,
+body,
+#root {
+  height: 100%;
+  width: 100%;
+  margin: 0;
+  padding: 0;
+  overflow: hidden;
+  font-family: var(--font-family);
+  -webkit-font-smoothing: antialiased;
+  -moz-osx-font-smoothing: grayscale;
+  background-color: var(--background);
+  color: var(--text);
+}
+
+/* UI chrome should prevent accidental drag-selection */
+.toolbar,
+.status-bar {
+  user-select: none;
+}
+
+/* Editor document paper and editable text must allow normal text selection */
+.editor-scroll-area,
+.editor-paper,
+.tiptap,
+.tiptap * {
+  user-select: text;
+}
