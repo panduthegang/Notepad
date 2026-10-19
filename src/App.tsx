@@ -1,5 +1,7 @@
 import { useEditor } from "@tiptap/react";
 import StarterKit from "@tiptap/starter-kit";
+import { TextStyleKit } from "@tiptap/extension-text-style";
+import TextAlign from "@tiptap/extension-text-align";
 import Highlight from "@tiptap/extension-highlight";
 import Placeholder from "@tiptap/extension-placeholder";
 import CharacterCount from "@tiptap/extension-character-count";
@@ -13,8 +15,16 @@ export default function App() {
   // Configure and initialize the TipTap rich-text editor instance
   const editor = useEditor({
     extensions: [
-      // StarterKit provides standard marks & nodes (Bold, Italic, Paragraphs, History, etc.)
+      // StarterKit provides standard marks & nodes (Bold, Italic, Underline, Paragraphs, History, etc.)
       StarterKit,
+
+      // TextStyleKit bundles TextStyle, FontFamily, FontSize, Color, etc.
+      TextStyleKit,
+
+      // TextAlign handles paragraph and heading text alignment
+      TextAlign.configure({
+        types: ["heading", "paragraph"],
+      }),
 
       // Highlight extension with multi-color support enabled
       Highlight.configure({
