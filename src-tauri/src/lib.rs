@@ -1,5 +1,6 @@
-// tauri::Manager is needed for app.get_webview_window() and app.emit()
-use tauri::Manager;
+// tauri::Manager is needed for app.get_webview_window()
+// tauri::Emitter is needed for app.emit()
+use tauri::{Emitter, Manager};
 
 // Payload sent to the JS frontend when a second instance tries to open a file
 #[derive(Clone, serde::Serialize)]
