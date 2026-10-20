@@ -127,7 +127,8 @@
 .tiptap code {
   background-color: var(--hover);
   color: var(--text);
-  border-radius: var(--radius-sm);
+  border: 1px solid var(--border-subtle);
+  border-radius: 0px;
   padding: 0.15em 0.35em;
   font-size: 0.875em;
   font-family: ui-monospace, SFMono-Regular, Menlo, Monaco, Consolas, monospace;
@@ -137,8 +138,9 @@
 .tiptap pre {
   background-color: var(--hover);
   color: var(--text);
+  border: 1px solid var(--border);
   padding: 0.75rem 1rem;
-  border-radius: var(--radius-md);
+  border-radius: 0px;
   margin: 1em 0;
   overflow-x: auto;
 }
@@ -148,6 +150,7 @@
   color: inherit;
   padding: 0;
   font-size: 0.875rem;
+  border: none;
 }
 
 /* Empty editor placeholder */
@@ -160,19 +163,51 @@
   height: 0;
 }
 
-/* Highlight marks */
+/* Highlight marks - sharp rectangular high-contrast marker */
 .tiptap mark {
   padding: 0.1em 0.25em;
-  border-radius: var(--radius-sm);
+  border-radius: 0px;
   box-decoration-break: clone;
   -webkit-box-decoration-break: clone;
 }
 
-/* Ensure white text on dark highlight (Black / Slate) */
-.tiptap mark[data-color="#0f172a"],
-.tiptap mark[style*="background-color: #0f172a"],
-.tiptap mark[style*="background-color: rgb(15, 23, 42)"],
-.tiptap mark[style*="background-color: #000000"],
-.tiptap mark[style*="background-color: rgb(0, 0, 0)"] {
+/* Light Theme: pastel highlights keep high-contrast black text; contrast mark uses white text */
+:root .tiptap mark,
+[data-theme="light"] .tiptap mark {
+  color: #000000;
+}
+
+:root .tiptap mark[data-color*="contrast"],
+:root .tiptap mark[style*="--highlight-contrast"],
+[data-theme="light"] .tiptap mark[data-color*="contrast"],
+[data-theme="light"] .tiptap mark[style*="--highlight-contrast"],
+:root .tiptap mark[data-color="#0f172a"],
+:root .tiptap mark[data-color="#000000"],
+[data-theme="light"] .tiptap mark[data-color="#0f172a"],
+[data-theme="light"] .tiptap mark[data-color="#000000"] {
   color: #ffffff;
 }
+
+/* Dark Theme: rich deep highlights have crisp white text; contrast mark has black text */
+[data-theme="dark"] .tiptap mark {
+  color: #ffffff;
+}
+
+[data-theme="dark"] .tiptap mark[data-color*="contrast"],
+[data-theme="dark"] .tiptap mark[style*="--highlight-contrast"],
+[data-theme="dark"] .tiptap mark[data-color="#f4f4f5"],
+[data-theme="dark"] .tiptap mark[data-color="#ffffff"] {
+  color: #000000;
+}
+
+/* Fallback: Pastel hex colors always keep dark text for readability */
+.tiptap mark[data-color="#fef08a"],
+.tiptap mark[data-color="#bbf7d0"],
+.tiptap mark[data-color="#fbcfe8"],
+.tiptap mark[data-color="#bfdbfe"],
+.tiptap mark[data-color="#fed7aa"],
+.tiptap mark[data-color="#e9d5ff"] {
+  color: #000000;
+}
+
+

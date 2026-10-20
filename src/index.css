@@ -1,99 +1,123 @@
 @import "tailwindcss";
 
+/* Support [data-theme="dark"] variant in Tailwind v4 */
+@custom-variant dark (&:where([data-theme="dark"], [data-theme="dark"] *));
+
 /* ==========================================================================
-   Design Tokens (CSS Variables)
-   These CSS variables define the visual foundation of HRNote.
-   They can be easily overridden for dark mode or custom themes.
+   Design Tokens - Architectural Mono Design System
+   High-contrast B&W UI chrome with sharp corners and per-theme highlights.
    ========================================================================== */
 :root {
-  /* Font Family */
+  /* Font Families (Bundled Fontsource, zero CDN) */
   --font-family: "Inter Variable", system-ui, -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, sans-serif;
+  --font-mono: "JetBrains Mono Variable", Consolas, monospace;
 
-  /* Background & Surface Colors */
-  --background: #f8fafc;
+  /* UI Chrome - Light Mode */
+  --background: #ffffff;
   --surface: #ffffff;
   --toolbar: #ffffff;
-  --statusbar: #f1f5f9;
+  --statusbar: #ffffff;
 
-  /* Typography Colors */
-  --text: #0f172a;
-  --text-muted: #64748b;
-  --placeholder: #94a3b8;
+  --text: #000000;
+  --text-muted: #666666;
+  --placeholder: #999999;
 
-  /* Border Color */
-  --border: #e2e8f0;
+  /* Strong 1px outer border vs subtle inner divider */
+  --border: #000000;
+  --border-subtle: #e5e5e5;
 
-  /* Accent & Interactive States */
-  --accent: #3b82f6;
-  --accent-active: #1d4ed8;
-  --hover: #f1f5f9;
-  --active: #e2e8f0;
+  /* Interactive States */
+  --hover: #f4f4f5;
+  --active: #000000;
+  --active-text: #ffffff;
 
-  /* Highlight Swatches (Pastel & Modern Palette) */
+  /* Per-Theme Highlight Tokens (Light Theme: luminous pastels + contrast black) */
   --highlight-yellow: #fef08a;
   --highlight-green: #bbf7d0;
   --highlight-pink: #fbcfe8;
   --highlight-blue: #bfdbfe;
-  --highlight-red: #fca5a5;
   --highlight-orange: #fed7aa;
   --highlight-purple: #e9d5ff;
-  --highlight-black: #0f172a;
+  --highlight-contrast: #18181b;
+  --highlight-contrast-text: #ffffff;
 
-  /* Border Radius */
-  --radius-sm: 4px;
-  --radius-md: 6px;
-  --radius-lg: 8px;
+  /* Sharp Geometry (0px radius) */
+  --radius-sm: 0px;
+  --radius-md: 0px;
+  --radius-lg: 0px;
 }
 
 /* ==========================================================================
-   Tailwind Theme Registration
-   Registers our design tokens into Tailwind CSS v4's theme system so that
-   utility classes like `bg-surface`, `text-muted`, and `border-border` work.
+   UI Chrome - Dark Mode ([data-theme="dark"])
+   Stark obsidian background with pure white typography and sharp borders.
+   ========================================================================== */
+[data-theme="dark"] {
+  --background: #000000;
+  --surface: #000000;
+  --toolbar: #000000;
+  --statusbar: #000000;
+
+  --text: #ffffff;
+  --text-muted: #888888;
+  --placeholder: #555555;
+
+  /* Strong 1px outer border vs subtle inner divider */
+  --border: #ffffff;
+  --border-subtle: #27272a;
+
+  /* Interactive States */
+  --hover: #18181b;
+  --active: #ffffff;
+  --active-text: #000000;
+
+  /* Per-Theme Highlight Tokens (Dark Theme: rich muted tints + contrast white) */
+  --highlight-yellow: #713f12;
+  --highlight-green: #14532d;
+  --highlight-pink: #831843;
+  --highlight-blue: #1e3a8a;
+  --highlight-orange: #7c2d12;
+  --highlight-purple: #581c87;
+  --highlight-contrast: #f4f4f5;
+  --highlight-contrast-text: #000000;
+}
+
+/* ==========================================================================
+   Tailwind v4 Theme Registration
    ========================================================================== */
 @theme {
-  --font-sans: "Inter Variable", system-ui, -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, sans-serif;
+  --font-sans: var(--font-family);
+  --font-mono: var(--font-mono);
 
-  /* Colors mapped from CSS variables */
   --color-background: var(--background);
   --color-surface: var(--surface);
   --color-toolbar: var(--toolbar);
   --color-statusbar: var(--statusbar);
   --color-border: var(--border);
+  --color-border-subtle: var(--border-subtle);
   --color-text: var(--text);
   --color-muted: var(--text-muted);
   --color-placeholder: var(--placeholder);
-  --color-accent: var(--accent);
-  --color-accent-active: var(--accent-active);
   --color-hover: var(--hover);
   --color-active: var(--active);
+  --color-active-text: var(--active-text);
 
-  /* Highlight colors */
+  /* Highlight color utility mappings */
   --color-highlight-yellow: var(--highlight-yellow);
   --color-highlight-green: var(--highlight-green);
   --color-highlight-pink: var(--highlight-pink);
   --color-highlight-blue: var(--highlight-blue);
-  --color-highlight-red: var(--highlight-red);
   --color-highlight-orange: var(--highlight-orange);
   --color-highlight-purple: var(--highlight-purple);
-  --color-highlight-black: var(--highlight-black);
+  --color-highlight-contrast: var(--highlight-contrast);
 
-  /* Radii */
-  --radius-sm: var(--radius-sm);
-  --radius-md: var(--radius-md);
-  --radius-lg: var(--radius-lg);
-}
-
-/* ==========================================================================
-   Future Dark Theme ([data-theme="dark"])
-   Leave empty for now. Tokens above will be customized here in Phase 4.
-   ========================================================================== */
-[data-theme="dark"] {
-  /* Future dark mode token overrides will be added here */
+  /* Zero radius */
+  --radius-sm: 0px;
+  --radius-md: 0px;
+  --radius-lg: 0px;
 }
 
 /* ==========================================================================
    Base Styles
-   Window management, font smoothing, and text selection behavior.
    ========================================================================== */
 html,
 body,
@@ -110,13 +134,13 @@ body,
   color: var(--text);
 }
 
-/* UI chrome should prevent accidental drag-selection */
+/* UI chrome prevents accidental drag selection */
 .toolbar,
 .status-bar {
   user-select: none;
 }
 
-/* Editor document paper and editable text must allow normal text selection */
+/* Editor document allows normal text selection */
 .editor-scroll-area,
 .editor-paper,
 .tiptap,
@@ -125,12 +149,11 @@ body,
 }
 
 /* ==========================================================================
-   Custom Scrollbars
-   Sleek, modern floating scrollbars without clunky browser/OS arrow buttons.
+   Custom Scrollbars - Sharp Architectural Track
    ========================================================================== */
 * {
   scrollbar-width: thin;
-  scrollbar-color: rgba(148, 163, 184, 0.35) transparent;
+  scrollbar-color: var(--border-subtle) transparent;
 }
 
 ::-webkit-scrollbar {
@@ -143,12 +166,12 @@ body,
 }
 
 ::-webkit-scrollbar-thumb {
-  background: rgba(148, 163, 184, 0.35);
-  border-radius: 9999px;
+  background: var(--border-subtle);
+  border-radius: 0px;
 }
 
 ::-webkit-scrollbar-thumb:hover {
-  background: rgba(100, 116, 139, 0.6);
+  background: var(--text-muted);
 }
 
 ::-webkit-scrollbar-button {
@@ -160,4 +183,3 @@ body,
 ::-webkit-scrollbar-corner {
   background: transparent;
 }
-

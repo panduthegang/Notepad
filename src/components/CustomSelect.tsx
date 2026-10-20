@@ -81,7 +81,7 @@ export default function CustomSelect({
       className={`relative inline-block text-left ${className}`}
       style={{ minWidth }}
     >
-      {/* Trigger Button */}
+      {/* Trigger Button - Sharp Architectural Box with High-Contrast Focus */}
       <button
         type="button"
         onMouseDown={(e) => {
@@ -89,10 +89,10 @@ export default function CustomSelect({
           e.preventDefault();
         }}
         onClick={() => setIsOpen((prev) => !prev)}
-        className={`h-8 w-full px-2.5 py-1 text-xs font-medium bg-surface text-text border rounded-xl flex items-center justify-between gap-1.5 transition-all duration-150 cursor-pointer outline-none select-none ${
+        className={`h-8 w-full px-2.5 py-1 text-xs font-medium bg-surface text-text border border-border rounded-none flex items-center justify-between gap-1.5 transition-colors duration-100 cursor-pointer outline-none select-none focus-visible:ring-2 focus-visible:ring-text focus-visible:ring-offset-1 focus-visible:ring-offset-surface ${
           isOpen
-            ? "border-text/30 ring-1 ring-text/10 bg-hover/70"
-            : "border-border hover:bg-hover hover:border-border active:scale-98"
+            ? "bg-hover font-semibold"
+            : "hover:bg-hover active:bg-hover"
         }`}
         title={title}
         aria-label={ariaLabel || title}
@@ -106,18 +106,19 @@ export default function CustomSelect({
           {displayLabel}
         </span>
         <ChevronDown
-          size={13}
-          className={`text-muted transition-transform duration-200 shrink-0 ${
-            isOpen ? "rotate-180 text-text" : ""
+          size={12}
+          strokeWidth={2.5}
+          className={`text-text transition-transform duration-150 shrink-0 ${
+            isOpen ? "rotate-180" : ""
           }`}
         />
       </button>
 
-      {/* Dropdown Menu Popover */}
+      {/* Dropdown Menu Popover - Sharp 1px Border with Architectural Flat Offset */}
       {isOpen && (
         <div
           role="listbox"
-          className="absolute top-9 left-0 min-w-full w-max max-w-[200px] max-h-60 overflow-y-auto bg-surface/95 backdrop-blur-md border border-border shadow-[0_8px_24px_rgba(0,0,0,0.12)] rounded-xl p-1 pr-1.5 z-50 flex flex-col gap-0.5 animate-in fade-in zoom-in-95 duration-100"
+          className="absolute top-9 left-0 min-w-full w-max max-w-[220px] max-h-60 overflow-y-auto bg-surface border border-border shadow-[3px_3px_0px_var(--border)] rounded-none p-0.5 z-50 flex flex-col gap-0.5 animate-in fade-in duration-100"
         >
           {options.map((option) => {
             const isSelected = selectedOption
@@ -138,19 +139,19 @@ export default function CustomSelect({
                   onChange(option.value);
                   setIsOpen(false);
                 }}
-                className={`w-full px-2.5 py-1.5 text-xs rounded-lg flex items-center justify-between text-left transition-colors cursor-pointer select-none ${
+                className={`w-full px-2.5 py-1.5 text-xs rounded-none flex items-center justify-between text-left transition-colors cursor-pointer select-none outline-none focus-visible:ring-2 focus-visible:ring-text ${
                   isSelected
-                    ? "bg-hover font-semibold text-text"
-                    : "text-text hover:bg-hover/80 font-normal"
+                    ? "bg-text text-surface font-semibold"
+                    : "text-text hover:bg-hover font-normal"
                 }`}
                 style={{ fontFamily: option.fontFamily || "inherit" }}
               >
                 <span className="truncate">{option.label}</span>
                 {isSelected && (
                   <Check
-                    size={13}
-                    strokeWidth={2.5}
-                    className="text-text shrink-0 ml-2"
+                    size={12}
+                    strokeWidth={2.8}
+                    className="shrink-0 ml-2"
                   />
                 )}
               </button>
@@ -161,4 +162,3 @@ export default function CustomSelect({
     </div>
   );
 }
-

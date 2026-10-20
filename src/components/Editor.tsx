@@ -8,7 +8,7 @@ interface EditorProps {
 export default function EditorComponent({ editor }: EditorProps) {
   return (
     <div
-      className="editor-scroll-area flex-1 overflow-y-auto px-4 py-3 bg-surface cursor-text"
+      className="editor-scroll-area flex-1 overflow-y-auto px-4 py-3 bg-background text-text cursor-text transition-colors duration-150"
       // Clicking empty area anywhere below text focuses the editor
       onClick={() => {
         if (editor && !editor.isFocused) {

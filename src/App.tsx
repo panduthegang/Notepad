@@ -1,3 +1,4 @@
+import { useState, useEffect } from "react";
 import { useEditor } from "@tiptap/react";
 import StarterKit from "@tiptap/starter-kit";
 import { TextStyleKit } from "@tiptap/extension-text-style";
@@ -12,6 +13,29 @@ import StatusBar from "./components/StatusBar";
 import "./App.css";
 
 export default function App() {
+  // Theme state: "light" or "dark" with localStorage persistence
+  const [theme, setTheme] = useState<"light" | "dark">(() => {
+    const attr = typeof document !== "undefined" ? document.documentElement.getAttribute("data-theme") : null;
+    if (attr === "dark" || attr === "light") return attr;
+    const saved = localStorage.getItem("hrnote-theme");
+    if (saved === "dark" || saved === "light") return saved;
+    return window.matchMedia &&
+      window.matchMedia("(prefers-color-scheme: dark)").matches
+      ? "dark"
+      : "light";
+  });
+
+  // Sync data-theme attribute with DOM and save to localStorage
+  useEffect(() => {
+    document.documentElement.setAttribute("data-theme", theme);
+    localStorage.setItem("hrnote-theme", theme);
+  }, [theme]);
+
+  // Toggle between light and dark theme
+  const toggleTheme = () => {
+    setTheme((prev) => (prev === "light" ? "dark" : "light"));
+  };
+
   // Configure and initialize the TipTap rich-text editor instance
   const editor = useEditor({
     extensions: [
@@ -46,9 +70,9 @@ export default function App() {
   });
 
   return (
-    <div className="flex flex-col h-screen w-screen overflow-hidden bg-surface text-text">
+    <div className="flex flex-col h-screen w-screen overflow-hidden bg-background text-text transition-colors duration-150">
       {/* Top formatting & action toolbar */}
-      <Toolbar editor={editor} />
+      <Toolbar editor={editor} theme={theme} onToggleTheme={toggleTheme} />
 
       {/* Main rich-text editor viewport */}
       <Editor editor={editor} />
@@ -58,3 +82,4 @@ export default function App() {
     </div>
   );
 }
+

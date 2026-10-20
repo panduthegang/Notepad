@@ -5,6 +5,22 @@
     <link rel="icon" type="image/svg+xml" href="/vite.svg" />
     <meta name="viewport" content="width=device-width, initial-scale=1.0" />
     <title>HRNote</title>
+    <!-- Prevent theme flash by resolving data-theme before first paint -->
+    <script>
+      (function () {
+        try {
+          var saved = localStorage.getItem("hrnote-theme");
+          var theme =
+            saved === "dark" || saved === "light"
+              ? saved
+              : window.matchMedia &&
+                window.matchMedia("(prefers-color-scheme: dark)").matches
+              ? "dark"
+              : "light";
+          document.documentElement.setAttribute("data-theme", theme);
+        } catch (e) {}
+      })();
+    </script>
   </head>
 
   <body>

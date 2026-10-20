@@ -35,37 +35,38 @@ export default function StatusBar({ editor }: StatusBarProps) {
   };
 
   return (
-    <footer className="status-bar flex-none flex items-center justify-between px-4 py-1.5 bg-statusbar border-t border-border select-none">
-      {/* Left: word & character counts */}
+    <footer className="status-bar flex-none flex items-center justify-between px-4 py-1.5 bg-surface border-t border-border select-none transition-colors duration-150">
+      {/* Left: word & character counts with bundled JetBrains Mono */}
       <div className="flex items-center gap-3">
         <div className="flex items-center gap-1.5 text-xs text-muted">
-          <FileText size={12} strokeWidth={2} className="text-muted/70 shrink-0" />
-          <span className="font-semibold text-text tabular-nums">{words}</span>
+          <FileText size={12} strokeWidth={2.2} className="text-text/70 shrink-0" />
+          <span className="font-mono font-semibold text-text tabular-nums">{words}</span>
           <span>{words === 1 ? "word" : "words"}</span>
         </div>
-        <div className="w-px h-3.5 bg-border" />
+        {/* Subtle Inner Divider */}
+        <div className="w-px h-3.5 bg-border-subtle" />
         <div className="flex items-center gap-1.5 text-xs text-muted">
-          <Hash size={12} strokeWidth={2} className="text-muted/70 shrink-0" />
-          <span className="font-semibold text-text tabular-nums">{characters}</span>
+          <Hash size={12} strokeWidth={2.2} className="text-text/70 shrink-0" />
+          <span className="font-mono font-semibold text-text tabular-nums">{characters}</span>
           <span>{characters === 1 ? "character" : "characters"}</span>
         </div>
       </div>
 
-      {/* Right: portfolio credit */}
+      {/* Right: portfolio credit with high-contrast keyboard focus */}
       <div className="flex items-center gap-1 text-[11px] text-muted">
         <span>Designed &amp; developed by</span>
         <button
           type="button"
           onClick={handlePortfolioClick}
-          className="inline-flex items-center gap-0.5 font-semibold text-text/70 hover:text-text transition-colors duration-150 cursor-pointer group outline-none"
+          className="inline-flex items-center gap-0.5 font-semibold text-text hover:underline transition-colors duration-100 cursor-pointer group outline-none focus-visible:ring-2 focus-visible:ring-text focus-visible:ring-offset-1 focus-visible:ring-offset-surface rounded-none"
           title="Visit Harsh Rathod's portfolio"
           aria-label="Open Harsh Rathod's portfolio"
         >
           Harsh Rathod
           <ExternalLink
             size={10}
-            strokeWidth={2}
-            className="opacity-0 group-hover:opacity-70 transition-opacity duration-150 shrink-0"
+            strokeWidth={2.2}
+            className="opacity-0 group-hover:opacity-100 transition-opacity duration-100 shrink-0 ml-0.5"
           />
         </button>
       </div>

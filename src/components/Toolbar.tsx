@@ -12,6 +12,8 @@ import {
   AlignRight,
   AlignJustify,
   Check,
+  Sun,
+  Moon,
 } from "lucide-react";
 
 import CustomSelect, { CustomSelectOption } from "./CustomSelect";
@@ -19,12 +21,15 @@ import CustomSelect, { CustomSelectOption } from "./CustomSelect";
 interface ToolbarProps {
   // TipTap editor instance passed down from App
   editor: Editor | null;
+  // Current active theme ("light" or "dark")
+  theme?: "light" | "dark";
+  // Callback to toggle theme
+  onToggleTheme?: () => void;
 }
 
-// System fonts (Windows native) and bundled open-source fonts (Fontsource)
+// System fonts (Windows native) and bundled open-source fonts (Fontsource - 100% offline)
 const FONT_FAMILY_OPTIONS: CustomSelectOption[] = [
   { label: "Default (Inter)", shortLabel: "Inter", value: "", fontFamily: "" },
-  // Bundled open-source fonts (Fontsource - work completely offline)
   {
     label: "Lora",
     shortLabel: "Lora",
@@ -43,7 +48,6 @@ const FONT_FAMILY_OPTIONS: CustomSelectOption[] = [
     value: "'JetBrains Mono Variable', 'JetBrains Mono', Consolas, monospace",
     fontFamily: "'JetBrains Mono Variable', Consolas, monospace",
   },
-  // System fonts already present on Windows
   {
     label: "Arial",
     shortLabel: "Arial",
@@ -96,81 +100,67 @@ const FONT_SIZE_OPTIONS: CustomSelectOption[] = [
   { label: "36px", shortLabel: "36px", value: "36" },
 ];
 
-// Preset text colors curated in a 5x2 grid with high legibility & aesthetic harmony
+// Preset text colors curated to be readable on BOTH white and black backgrounds.
+// Default text color is "" (inherit) so it automatically adapts to light/dark themes.
 const TEXT_COLORS = [
-  { name: "Default (Ink)", value: "", preview: "#0f172a", checkColor: "text-white" },
-  { name: "Slate Gray", value: "#64748b", preview: "#64748b", checkColor: "text-white" },
+  { name: "Default", value: "", preview: "var(--text)", checkColor: "text-surface" },
   { name: "Ruby Red", value: "#e11d48", preview: "#e11d48", checkColor: "text-white" },
   { name: "Amber Orange", value: "#ea580c", preview: "#ea580c", checkColor: "text-white" },
-  { name: "Golden Amber", value: "#d97706", preview: "#d97706", checkColor: "text-white" },
+  { name: "Golden Amber", value: "#ca8a04", preview: "#ca8a04", checkColor: "text-white" },
   { name: "Emerald Green", value: "#16a34a", preview: "#16a34a", checkColor: "text-white" },
   { name: "Teal Cyan", value: "#0d9488", preview: "#0d9488", checkColor: "text-white" },
   { name: "Royal Blue", value: "#2563eb", preview: "#2563eb", checkColor: "text-white" },
-  { name: "Purple Violet", value: "#7c3aed", preview: "#7c3aed", checkColor: "text-white" },
+  { name: "Purple", value: "#9333ea", preview: "#9333ea", checkColor: "text-white" },
   { name: "Rose Pink", value: "#db2777", preview: "#db2777", checkColor: "text-white" },
 ];
 
-// 8 distinct highlight swatches matching design tokens
+// Per-theme highlight color tokens (variables adapt automatically between light and dark modes)
 const HIGHLIGHT_COLORS = [
   {
     name: "Yellow",
-    value: "#fef08a",
-    cssVar: "var(--highlight-yellow)",
-    activeRing: "ring-amber-400/80 shadow-[0_0_8px_rgba(251,191,36,0.35)]",
-    checkColor: "text-amber-800",
+    value: "var(--highlight-yellow)",
+    preview: "var(--highlight-yellow)",
+    checkColor: "text-text",
   },
   {
     name: "Green",
-    value: "#bbf7d0",
-    cssVar: "var(--highlight-green)",
-    activeRing: "ring-emerald-400/80 shadow-[0_0_8px_rgba(52,211,153,0.35)]",
-    checkColor: "text-emerald-800",
+    value: "var(--highlight-green)",
+    preview: "var(--highlight-green)",
+    checkColor: "text-text",
   },
   {
     name: "Pink",
-    value: "#fbcfe8",
-    cssVar: "var(--highlight-pink)",
-    activeRing: "ring-pink-400/80 shadow-[0_0_8px_rgba(244,114,182,0.35)]",
-    checkColor: "text-pink-800",
+    value: "var(--highlight-pink)",
+    preview: "var(--highlight-pink)",
+    checkColor: "text-text",
   },
   {
     name: "Blue",
-    value: "#bfdbfe",
-    cssVar: "var(--highlight-blue)",
-    activeRing: "ring-sky-400/80 shadow-[0_0_8px_rgba(96,165,250,0.35)]",
-    checkColor: "text-sky-800",
-  },
-  {
-    name: "Red",
-    value: "#fca5a5",
-    cssVar: "var(--highlight-red)",
-    activeRing: "ring-rose-400/80 shadow-[0_0_8px_rgba(251,113,133,0.35)]",
-    checkColor: "text-rose-800",
+    value: "var(--highlight-blue)",
+    preview: "var(--highlight-blue)",
+    checkColor: "text-text",
   },
   {
     name: "Orange",
-    value: "#fed7aa",
-    cssVar: "var(--highlight-orange)",
-    activeRing: "ring-orange-400/80 shadow-[0_0_8px_rgba(251,146,60,0.35)]",
-    checkColor: "text-orange-800",
+    value: "var(--highlight-orange)",
+    preview: "var(--highlight-orange)",
+    checkColor: "text-text",
   },
   {
     name: "Purple",
-    value: "#e9d5ff",
-    cssVar: "var(--highlight-purple)",
-    activeRing: "ring-purple-400/80 shadow-[0_0_8px_rgba(192,132,252,0.35)]",
-    checkColor: "text-purple-800",
+    value: "var(--highlight-purple)",
+    preview: "var(--highlight-purple)",
+    checkColor: "text-text",
   },
   {
-    name: "Black",
-    value: "#0f172a",
-    cssVar: "var(--highlight-black)",
-    activeRing: "ring-slate-900/80 shadow-[0_0_8px_rgba(15,23,42,0.4)]",
-    checkColor: "text-white",
+    name: "Invert",
+    value: "var(--highlight-contrast)",
+    preview: "var(--highlight-contrast)",
+    checkColor: "text-surface",
   },
 ];
 
-export default function Toolbar({ editor }: ToolbarProps) {
+export default function Toolbar({ editor, theme = "light", onToggleTheme }: ToolbarProps) {
   // State for toggling the text color popover
   const [isColorPickerOpen, setIsColorPickerOpen] = useState(false);
   const colorPickerRef = useRef<HTMLDivElement>(null);
@@ -254,7 +244,7 @@ export default function Toolbar({ editor }: ToolbarProps) {
   if (!editor) {
     return (
       <header className="px-4 pt-3 pb-1 flex items-center select-none">
-        <div className="h-11 w-full max-w-[800px] bg-surface/60 rounded-2xl animate-pulse border border-border" />
+        <div className="h-10 w-full max-w-[800px] bg-surface rounded-none animate-pulse border border-border" />
       </header>
     );
   }
@@ -275,37 +265,39 @@ export default function Toolbar({ editor }: ToolbarProps) {
 
   return (
     <header className="px-4 pt-3 pb-1 flex items-center justify-start select-none z-10">
-      {/* Floating Island Dock with Soft Corners */}
-      <div className="inline-flex flex-wrap items-center gap-1.5 px-3 py-1.5 bg-surface/95 backdrop-blur-md border border-border shadow-[0_2px_12px_rgba(0,0,0,0.06),0_1px_3px_rgba(0,0,0,0.03)] rounded-2xl transition-all">
+      {/* Sharp Architectural Dock with 1px border and flat architectural shadow */}
+      <div className="inline-flex flex-wrap items-center gap-1 px-2.5 py-1.5 bg-surface border border-border shadow-[3px_3px_0px_var(--border)] rounded-none transition-colors duration-150">
         {/* GROUP 1: History Controls (Undo & Redo) */}
-        <div className="flex items-center gap-1">
+        <div className="flex items-center gap-0.5">
           <button
             type="button"
+            onMouseDown={(e) => e.preventDefault()}
             onClick={() => editor.chain().focus().undo().run()}
             disabled={!canUndo}
-            className="w-8 h-8 rounded-xl flex items-center justify-center text-text hover:bg-hover active:scale-95 disabled:opacity-30 disabled:pointer-events-none transition-all duration-150 cursor-pointer"
+            className="w-8 h-8 rounded-none border border-transparent flex items-center justify-center text-text hover:bg-hover active:bg-active disabled:opacity-20 disabled:pointer-events-none transition-colors duration-100 cursor-pointer outline-none focus-visible:ring-2 focus-visible:ring-text focus-visible:ring-offset-1 focus-visible:ring-offset-surface"
             title="Undo (Ctrl+Z)"
             aria-label="Undo"
           >
-            <Undo size={16} strokeWidth={2.2} />
+            <Undo size={15} strokeWidth={2.2} />
           </button>
           <button
             type="button"
+            onMouseDown={(e) => e.preventDefault()}
             onClick={() => editor.chain().focus().redo().run()}
             disabled={!canRedo}
-            className="w-8 h-8 rounded-xl flex items-center justify-center text-text hover:bg-hover active:scale-95 disabled:opacity-30 disabled:pointer-events-none transition-all duration-150 cursor-pointer"
+            className="w-8 h-8 rounded-none border border-transparent flex items-center justify-center text-text hover:bg-hover active:bg-active disabled:opacity-20 disabled:pointer-events-none transition-colors duration-100 cursor-pointer outline-none focus-visible:ring-2 focus-visible:ring-text focus-visible:ring-offset-1 focus-visible:ring-offset-surface"
             title="Redo (Ctrl+Y)"
             aria-label="Redo"
           >
-            <Redo size={16} strokeWidth={2.2} />
+            <Redo size={15} strokeWidth={2.2} />
           </button>
         </div>
 
-        {/* Divider */}
-        <div className="w-px h-5 bg-border mx-1" />
+        {/* Subtle Inner Divider */}
+        <div className="w-px h-5 bg-border-subtle mx-1" />
 
         {/* GROUP 2: Font Family & Font Size Custom Selects */}
-        <div className="flex items-center gap-1.5">
+        <div className="flex items-center gap-1">
           {/* Custom Font Family Select */}
           <CustomSelect
             value={activeFontFamily}
@@ -320,7 +312,7 @@ export default function Toolbar({ editor }: ToolbarProps) {
             placeholder="Inter"
             title="Font Family"
             ariaLabel="Font Family"
-            minWidth="110px"
+            minWidth="105px"
           />
 
           {/* Custom Font Size Select */}
@@ -337,94 +329,97 @@ export default function Toolbar({ editor }: ToolbarProps) {
             placeholder="16px"
             title="Font Size"
             ariaLabel="Font Size"
-            minWidth="72px"
+            minWidth="70px"
           />
         </div>
 
-        {/* Divider */}
-        <div className="w-px h-5 bg-border mx-1" />
+        {/* Subtle Inner Divider */}
+        <div className="w-px h-5 bg-border-subtle mx-1" />
 
         {/* GROUP 3: Bold, Italic, Underline */}
-        <div className="flex items-center gap-1">
+        <div className="flex items-center gap-0.5">
           <button
             type="button"
+            onMouseDown={(e) => e.preventDefault()}
             onClick={() => editor.chain().focus().toggleBold().run()}
-            className={`w-8 h-8 rounded-xl flex items-center justify-center transition-all duration-150 cursor-pointer ${
+            className={`w-8 h-8 rounded-none border border-transparent flex items-center justify-center transition-colors duration-100 cursor-pointer outline-none focus-visible:ring-2 focus-visible:ring-text focus-visible:ring-offset-1 focus-visible:ring-offset-surface ${
               isBold
-                ? "bg-text text-surface shadow-xs font-semibold scale-105"
-                : "text-text hover:bg-hover active:scale-95"
+                ? "bg-text text-surface font-semibold"
+                : "text-text hover:bg-hover active:bg-active"
             }`}
             title="Bold (Ctrl+B)"
             aria-label="Bold"
           >
-            <Bold size={16} strokeWidth={2.4} />
+            <Bold size={15} strokeWidth={2.4} />
           </button>
           <button
             type="button"
+            onMouseDown={(e) => e.preventDefault()}
             onClick={() => editor.chain().focus().toggleItalic().run()}
-            className={`w-8 h-8 rounded-xl flex items-center justify-center transition-all duration-150 cursor-pointer ${
+            className={`w-8 h-8 rounded-none border border-transparent flex items-center justify-center transition-colors duration-100 cursor-pointer outline-none focus-visible:ring-2 focus-visible:ring-text focus-visible:ring-offset-1 focus-visible:ring-offset-surface ${
               isItalic
-                ? "bg-text text-surface shadow-xs font-semibold scale-105"
-                : "text-text hover:bg-hover active:scale-95"
+                ? "bg-text text-surface font-semibold"
+                : "text-text hover:bg-hover active:bg-active"
             }`}
             title="Italic (Ctrl+I)"
             aria-label="Italic"
           >
-            <Italic size={16} strokeWidth={2.4} />
+            <Italic size={15} strokeWidth={2.4} />
           </button>
           <button
             type="button"
+            onMouseDown={(e) => e.preventDefault()}
             onClick={() => editor.chain().focus().toggleUnderline().run()}
-            className={`w-8 h-8 rounded-xl flex items-center justify-center transition-all duration-150 cursor-pointer ${
+            className={`w-8 h-8 rounded-none border border-transparent flex items-center justify-center transition-colors duration-100 cursor-pointer outline-none focus-visible:ring-2 focus-visible:ring-text focus-visible:ring-offset-1 focus-visible:ring-offset-surface ${
               isUnderline
-                ? "bg-text text-surface shadow-xs font-semibold scale-105"
-                : "text-text hover:bg-hover active:scale-95"
+                ? "bg-text text-surface font-semibold"
+                : "text-text hover:bg-hover active:bg-active"
             }`}
             title="Underline (Ctrl+U)"
             aria-label="Underline"
           >
-            <Underline size={16} strokeWidth={2.4} />
+            <Underline size={15} strokeWidth={2.4} />
           </button>
         </div>
 
-        {/* Divider */}
-        <div className="w-px h-5 bg-border mx-1" />
+        {/* Subtle Inner Divider */}
+        <div className="w-px h-5 bg-border-subtle mx-1" />
 
-        {/* GROUP 4: Text Color & Highlight Colors */}
-        <div className="flex items-center gap-2">
+        {/* GROUP 4: Text Color & Colored Highlight Swatches */}
+        <div className="flex items-center gap-1.5">
           {/* Text Color Picker Trigger with Popover */}
           <div className="relative" ref={colorPickerRef}>
             <button
               type="button"
               onMouseDown={(e) => e.preventDefault()}
               onClick={() => setIsColorPickerOpen((prev) => !prev)}
-              className={`w-8 h-8 rounded-xl flex flex-col items-center justify-center transition-all duration-150 cursor-pointer outline-none select-none ${
+              className={`w-8 h-8 rounded-none border flex flex-col items-center justify-center transition-colors duration-100 cursor-pointer outline-none select-none focus-visible:ring-2 focus-visible:ring-text focus-visible:ring-offset-1 focus-visible:ring-offset-surface ${
                 isColorPickerOpen
-                  ? "bg-hover text-text shadow-xs ring-1 ring-border"
-                  : "text-text hover:bg-hover active:scale-95"
+                  ? "border-text bg-hover text-text"
+                  : "border-transparent text-text hover:bg-hover active:bg-active"
               }`}
               title="Text Color"
               aria-label="Text Color"
               aria-expanded={isColorPickerOpen}
             >
-              <Baseline size={15} strokeWidth={2.4} />
+              <Baseline size={14} strokeWidth={2.4} />
               <div
-                className="w-3.5 h-[3px] rounded-full mt-0.5 transition-colors duration-150"
+                className="w-3.5 h-[2px] mt-0.5"
                 style={{ backgroundColor: activeTextColor || "var(--text)" }}
               />
             </button>
 
-            {/* Floating Color Palette Popover */}
+            {/* Sharp Architectural Color Palette Popover */}
             {isColorPickerOpen && (
               <div
                 role="dialog"
                 aria-label="Text Color Palette"
-                className="absolute top-10 left-1/2 -translate-x-1/2 bg-surface/95 backdrop-blur-xl border border-border shadow-[0_12px_32px_rgba(0,0,0,0.12),0_2px_8px_rgba(0,0,0,0.04)] rounded-2xl p-3 z-50 min-w-[172px] flex flex-col gap-2.5 animate-in fade-in zoom-in-95 duration-150 select-none"
+                className="absolute top-9 left-1/2 -translate-x-1/2 bg-surface border border-border shadow-[3px_3px_0px_var(--border)] rounded-none p-2.5 z-50 min-w-[160px] flex flex-col gap-2 select-none animate-in fade-in duration-100"
               >
                 {/* Header with Title and Quick Reset */}
                 <div className="flex items-center justify-between px-0.5">
-                  <span className="text-[11px] font-semibold tracking-tight text-text">
-                    Text Color
+                  <span className="text-[11px] font-semibold tracking-tight text-text uppercase">
+                    Color
                   </span>
                   {activeTextColor ? (
                     <button
@@ -434,19 +429,19 @@ export default function Toolbar({ editor }: ToolbarProps) {
                         editor.chain().focus().unsetColor().run();
                         setIsColorPickerOpen(false);
                       }}
-                      className="text-[10px] font-medium text-muted hover:text-text px-1.5 py-0.5 rounded-md hover:bg-hover transition-colors cursor-pointer"
+                      className="text-[10px] font-semibold text-text hover:underline cursor-pointer"
                     >
                       Reset
                     </button>
                   ) : (
-                    <span className="text-[10px] font-medium text-muted/70">
+                    <span className="text-[10px] font-medium text-muted">
                       Default
                     </span>
                   )}
                 </div>
 
-                {/* Symmetrical 5x2 Color Grid */}
-                <div className="grid grid-cols-5 gap-2 justify-items-center">
+                {/* Symmetrical Sharp Color Grid */}
+                <div className="grid grid-cols-5 gap-1.5 justify-items-center">
                   {TEXT_COLORS.map((col) => {
                     const isSelected = activeTextColor === col.value;
 
@@ -463,10 +458,10 @@ export default function Toolbar({ editor }: ToolbarProps) {
                           }
                           setIsColorPickerOpen(false);
                         }}
-                        className={`w-6 h-6 rounded-full flex items-center justify-center cursor-pointer transition-all duration-150 relative outline-none ring-1 ring-black/10 dark:ring-white/10 ${
+                        className={`w-5 h-5 rounded-none flex items-center justify-center cursor-pointer transition-transform duration-100 border border-border outline-none focus-visible:ring-2 focus-visible:ring-text ${
                           isSelected
-                            ? "scale-110 shadow-sm ring-2 ring-offset-2 ring-text/80"
-                            : "hover:scale-115 active:scale-90 hover:shadow-xs"
+                            ? "ring-2 ring-text ring-offset-1 ring-offset-surface scale-105"
+                            : "hover:scale-110 active:scale-95"
                         }`}
                         style={{
                           backgroundColor:
@@ -477,7 +472,7 @@ export default function Toolbar({ editor }: ToolbarProps) {
                       >
                         {isSelected && (
                           <Check
-                            size={11}
+                            size={10}
                             strokeWidth={3}
                             className={col.checkColor}
                           />
@@ -490,7 +485,7 @@ export default function Toolbar({ editor }: ToolbarProps) {
             )}
           </div>
 
-          {/* Highlight Color Pickers */}
+          {/* Colored Highlight Swatches - Sharp Squares with Per-Theme Tokens */}
           <div className="flex items-center gap-1 pl-0.5">
             {HIGHLIGHT_COLORS.map((color) => {
               const isCurrentColorActive = activeHighlightColor === color.value;
@@ -507,18 +502,18 @@ export default function Toolbar({ editor }: ToolbarProps) {
                       .toggleHighlight({ color: color.value })
                       .run()
                   }
-                  className={`w-6 h-6 rounded-full flex items-center justify-center cursor-pointer transition-all duration-150 hover:scale-110 active:scale-90 outline-none select-none ${
+                  className={`w-5 h-5 rounded-none border border-border flex items-center justify-center cursor-pointer transition-transform duration-100 hover:scale-110 active:scale-95 outline-none select-none focus-visible:ring-2 focus-visible:ring-text ${
                     isCurrentColorActive
-                      ? `ring-2 ring-offset-1.5 ring-offset-surface ${color.activeRing} scale-105`
-                      : "border border-black/10 hover:shadow-2xs"
+                      ? "ring-2 ring-text ring-offset-1 ring-offset-surface scale-105"
+                      : ""
                   }`}
-                  style={{ backgroundColor: color.cssVar }}
+                  style={{ backgroundColor: color.preview }}
                   title={`Highlight ${color.name} (click to toggle)`}
                   aria-label={`Highlight ${color.name}`}
                 >
                   {isCurrentColorActive && (
                     <Check
-                      size={12}
+                      size={10}
                       strokeWidth={3}
                       className={color.checkColor}
                     />
@@ -529,64 +524,89 @@ export default function Toolbar({ editor }: ToolbarProps) {
           </div>
         </div>
 
-        {/* Divider */}
-        <div className="w-px h-5 bg-border mx-1" />
+        {/* Subtle Inner Divider */}
+        <div className="w-px h-5 bg-border-subtle mx-1" />
 
         {/* GROUP 5: Text Alignment (Left, Center, Right, Justify) */}
-        <div className="flex items-center gap-1">
+        <div className="flex items-center gap-0.5">
           <button
             type="button"
+            onMouseDown={(e) => e.preventDefault()}
             onClick={() => editor.chain().focus().setTextAlign("left").run()}
-            className={`w-8 h-8 rounded-xl flex items-center justify-center transition-all duration-150 cursor-pointer ${
+            className={`w-8 h-8 rounded-none border border-transparent flex items-center justify-center transition-colors duration-100 cursor-pointer outline-none focus-visible:ring-2 focus-visible:ring-text focus-visible:ring-offset-1 focus-visible:ring-offset-surface ${
               currentAlignment === "left"
-                ? "bg-text text-surface shadow-xs font-semibold scale-105"
-                : "text-text hover:bg-hover active:scale-95"
+                ? "bg-text text-surface font-semibold"
+                : "text-text hover:bg-hover active:bg-active"
             }`}
             title="Align Left"
             aria-label="Align Left"
           >
-            <AlignLeft size={16} strokeWidth={2.2} />
+            <AlignLeft size={15} strokeWidth={2.2} />
           </button>
           <button
             type="button"
+            onMouseDown={(e) => e.preventDefault()}
             onClick={() => editor.chain().focus().setTextAlign("center").run()}
-            className={`w-8 h-8 rounded-xl flex items-center justify-center transition-all duration-150 cursor-pointer ${
+            className={`w-8 h-8 rounded-none border border-transparent flex items-center justify-center transition-colors duration-100 cursor-pointer outline-none focus-visible:ring-2 focus-visible:ring-text focus-visible:ring-offset-1 focus-visible:ring-offset-surface ${
               currentAlignment === "center"
-                ? "bg-text text-surface shadow-xs font-semibold scale-105"
-                : "text-text hover:bg-hover active:scale-95"
+                ? "bg-text text-surface font-semibold"
+                : "text-text hover:bg-hover active:bg-active"
             }`}
             title="Align Center"
             aria-label="Align Center"
           >
-            <AlignCenter size={16} strokeWidth={2.2} />
+            <AlignCenter size={15} strokeWidth={2.2} />
           </button>
           <button
             type="button"
+            onMouseDown={(e) => e.preventDefault()}
             onClick={() => editor.chain().focus().setTextAlign("right").run()}
-            className={`w-8 h-8 rounded-xl flex items-center justify-center transition-all duration-150 cursor-pointer ${
+            className={`w-8 h-8 rounded-none border border-transparent flex items-center justify-center transition-colors duration-100 cursor-pointer outline-none focus-visible:ring-2 focus-visible:ring-text focus-visible:ring-offset-1 focus-visible:ring-offset-surface ${
               currentAlignment === "right"
-                ? "bg-text text-surface shadow-xs font-semibold scale-105"
-                : "text-text hover:bg-hover active:scale-95"
+                ? "bg-text text-surface font-semibold"
+                : "text-text hover:bg-hover active:bg-active"
             }`}
             title="Align Right"
             aria-label="Align Right"
           >
-            <AlignRight size={16} strokeWidth={2.2} />
+            <AlignRight size={15} strokeWidth={2.2} />
           </button>
           <button
             type="button"
+            onMouseDown={(e) => e.preventDefault()}
             onClick={() => editor.chain().focus().setTextAlign("justify").run()}
-            className={`w-8 h-8 rounded-xl flex items-center justify-center transition-all duration-150 cursor-pointer ${
+            className={`w-8 h-8 rounded-none border border-transparent flex items-center justify-center transition-colors duration-100 cursor-pointer outline-none focus-visible:ring-2 focus-visible:ring-text focus-visible:ring-offset-1 focus-visible:ring-offset-surface ${
               currentAlignment === "justify"
-                ? "bg-text text-surface shadow-xs font-semibold scale-105"
-                : "text-text hover:bg-hover active:scale-95"
+                ? "bg-text text-surface font-semibold"
+                : "text-text hover:bg-hover active:bg-active"
             }`}
             title="Justify"
             aria-label="Justify"
           >
-            <AlignJustify size={16} strokeWidth={2.2} />
+            <AlignJustify size={15} strokeWidth={2.2} />
           </button>
         </div>
+
+        {/* GROUP 6: Theme Toggle (Light / Dark) */}
+        {onToggleTheme && (
+          <>
+            <div className="w-px h-5 bg-border-subtle mx-1" />
+            <button
+              type="button"
+              onMouseDown={(e) => e.preventDefault()}
+              onClick={onToggleTheme}
+              className="w-8 h-8 rounded-none border border-transparent flex items-center justify-center text-text hover:bg-hover active:bg-active transition-colors duration-100 cursor-pointer outline-none focus-visible:ring-2 focus-visible:ring-text focus-visible:ring-offset-1 focus-visible:ring-offset-surface"
+              title={`Switch to ${theme === "light" ? "Dark" : "Light"} mode`}
+              aria-label="Toggle theme"
+            >
+              {theme === "light" ? (
+                <Moon size={15} strokeWidth={2.2} />
+              ) : (
+                <Sun size={15} strokeWidth={2.2} />
+              )}
+            </button>
+          </>
+        )}
       </div>
     </header>
   );
