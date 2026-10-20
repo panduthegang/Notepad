@@ -202,15 +202,25 @@ export function useFileActions(editor: Editor | null) {
   const loadFileContent = useCallback(async (targetPath: string): Promise<boolean> => {
     if (!editor) return false;
     try {
-      const fileContent = await readTextFile(targetPath);
+      // Strip any surrounding quotes (Windows can pass quoted strings when path has spaces)
+      const cleanPath = targetPath.trim().replace(/^"(.*)"$/, "$1").trim();
+
+      // Ensure Tauri fs runtime scope is granted for this .hr file
+      try {
+        await invoke("grant_file_access", { path: cleanPath });
+      } catch {
+        // Continue if running in web fallback or if command already handled it
+      }
+
+      const fileContent = await readTextFile(cleanPath);
       const note = parseNote(fileContent); // throws friendly errors on bad format
 
       // Prevent the 'update' listener from falsely marking the document dirty
       isProgrammaticUpdate.current = true;
       editor.commands.setContent(note.content);
 
-      const base = getBasename(targetPath);
-      setFilePath(targetPath);
+      const base = getBasename(cleanPath);
+      setFilePath(cleanPath);
       setFileName(base);
       setCreatedDate(note.created);
       setIsDirty(false);
@@ -398,7 +408,10 @@ export function useFileActions(editor: Editor | null) {
         // invoke() calls our Rust get_startup_args() command.
         // args[0] = executable path; args[1] = file (when double-clicked)
         const args = await invoke<string[]>("get_startup_args");
-        const hrFile = args.slice(1).find((a) => a.toLowerCase().endsWith(".hr"));
+        const hrFile = args.slice(1).find((a) => {
+          const clean = a.trim().replace(/^"(.*)"$/, "$1").trim();
+          return clean.toLowerCase().endsWith(".hr");
+        });
         if (hrFile) {
           // Editor is always fresh/empty on cold start — no dirty check needed
           await loadFileContent(hrFile);
