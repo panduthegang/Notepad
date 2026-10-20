@@ -4,9 +4,13 @@ import { FileText, Hash, ExternalLink } from "lucide-react";
 
 interface StatusBarProps {
   editor: Editor | null;
+  /** Display name of the currently open file (e.g. "Untitled" or "notes.hr") */
+  fileName?: string;
+  /** Whether there are unsaved changes; shows a ● indicator when true */
+  isDirty?: boolean;
 }
 
-export default function StatusBar({ editor }: StatusBarProps) {
+export default function StatusBar({ editor, fileName = "Untitled", isDirty = false }: StatusBarProps) {
   // Subscribe to characterCount updates using TipTap's useEditorState selector.
   // This ensures only StatusBar re-renders when words/characters change,
   // without needing whole-editor re-rendering on transactions.
@@ -36,7 +40,7 @@ export default function StatusBar({ editor }: StatusBarProps) {
 
   return (
     <footer className="status-bar flex-none flex items-center justify-between px-4 py-1.5 bg-surface border-t border-border select-none transition-colors duration-150">
-      {/* Left: word & character counts with bundled JetBrains Mono */}
+      {/* Left: word & character counts + current file name */}
       <div className="flex items-center gap-3">
         <div className="flex items-center gap-1.5 text-xs text-muted">
           <FileText size={12} strokeWidth={2.2} className="text-text/70 shrink-0" />
@@ -49,6 +53,24 @@ export default function StatusBar({ editor }: StatusBarProps) {
           <Hash size={12} strokeWidth={2.2} className="text-text/70 shrink-0" />
           <span className="font-mono font-semibold text-text tabular-nums">{characters}</span>
           <span>{characters === 1 ? "character" : "characters"}</span>
+        </div>
+
+        {/* Subtle Inner Divider */}
+        <div className="w-px h-3.5 bg-border-subtle" />
+
+        {/* Current file name + unsaved-changes indicator (● dot) */}
+        <div className="flex items-center gap-1 text-xs text-muted">
+          {/* The ● dot appears when there are unsaved edits */}
+          {isDirty && (
+            <span
+              className="text-text font-bold leading-none"
+              title="Unsaved changes"
+              aria-label="Unsaved changes"
+            >
+              ●
+            </span>
+          )}
+          <span className="font-mono text-text/80">{fileName}</span>
         </div>
       </div>
 

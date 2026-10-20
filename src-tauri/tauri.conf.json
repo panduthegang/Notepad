@@ -34,6 +34,14 @@
       "icons/icon.icns",
       "icons/icon.ico"
     ],
+    "fileAssociations": [
+      {
+        "ext": ["hr"],
+        "name": "HRNote",
+        "description": "HRNote Document",
+        "mimeType": "application/x-hr-note"
+      }
+    ],
     "windows": {
       "nsis": {
         "installMode": "both",

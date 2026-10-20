@@ -15,6 +15,10 @@ import {
   Sun,
   Moon,
   Highlighter,
+  // File action icons (Phase 3b)
+  FilePlus,
+  FolderOpen,
+  Save,
 } from "lucide-react";
 
 import CustomSelect, { CustomSelectOption } from "./CustomSelect";
@@ -27,6 +31,11 @@ interface ToolbarProps {
   theme?: "light" | "dark";
   // Callback to toggle theme
   onToggleTheme?: () => void;
+  // File action callbacks (Phase 3b)
+  onNew?: () => void;
+  onOpen?: () => void;
+  onSave?: () => void;
+  onSaveAs?: () => void;
 }
 
 // System fonts (Windows native) and bundled open-source fonts (Fontsource - 100% offline)
@@ -168,7 +177,7 @@ const HIGHLIGHT_COLORS = [
   },
 ];
 
-export default function Toolbar({ editor, theme = "light", onToggleTheme }: ToolbarProps) {
+export default function Toolbar({ editor, theme = "light", onToggleTheme, onNew, onOpen, onSave, onSaveAs }: ToolbarProps) {
   // State for toggling the text color popover
   const [isColorPickerOpen, setIsColorPickerOpen] = useState(false);
   const colorPickerRef = useRef<HTMLDivElement>(null);
@@ -275,6 +284,65 @@ export default function Toolbar({ editor, theme = "light", onToggleTheme }: Tool
     <header className="px-4 pt-3 pb-1 flex items-center justify-start select-none z-10">
       {/* Sharp Architectural Dock with 1px border and flat architectural shadow */}
       <div className="inline-flex flex-wrap items-center gap-1 px-2.5 py-1.5 bg-surface border border-border shadow-[3px_3px_0px_var(--border)] rounded-none transition-colors duration-150">
+
+        {/* ── GROUP 0: File Actions (New / Open / Save / Save As) ── */}
+        <div className="flex items-center gap-0.5">
+          <Tooltip content="New (Ctrl+N)">
+            <button
+              type="button"
+              onMouseDown={(e) => e.preventDefault()}
+              onClick={onNew}
+              className="w-8 h-8 rounded-none border border-transparent flex items-center justify-center text-text hover:bg-hover active:bg-active transition-colors duration-100 cursor-pointer outline-none focus-visible:ring-2 focus-visible:ring-text focus-visible:ring-offset-1 focus-visible:ring-offset-surface"
+              aria-label="New note"
+            >
+              <FilePlus size={15} strokeWidth={2.2} />
+            </button>
+          </Tooltip>
+
+          <Tooltip content="Open (Ctrl+O)">
+            <button
+              type="button"
+              onMouseDown={(e) => e.preventDefault()}
+              onClick={onOpen}
+              className="w-8 h-8 rounded-none border border-transparent flex items-center justify-center text-text hover:bg-hover active:bg-active transition-colors duration-100 cursor-pointer outline-none focus-visible:ring-2 focus-visible:ring-text focus-visible:ring-offset-1 focus-visible:ring-offset-surface"
+              aria-label="Open note"
+            >
+              <FolderOpen size={15} strokeWidth={2.2} />
+            </button>
+          </Tooltip>
+
+          <Tooltip content="Save (Ctrl+S)">
+            <button
+              type="button"
+              onMouseDown={(e) => e.preventDefault()}
+              onClick={onSave}
+              className="w-8 h-8 rounded-none border border-transparent flex items-center justify-center text-text hover:bg-hover active:bg-active transition-colors duration-100 cursor-pointer outline-none focus-visible:ring-2 focus-visible:ring-text focus-visible:ring-offset-1 focus-visible:ring-offset-surface"
+              aria-label="Save note"
+            >
+              <Save size={15} strokeWidth={2.2} />
+            </button>
+          </Tooltip>
+
+          <Tooltip content="Save As (Ctrl+Shift+S)">
+            <button
+              type="button"
+              onMouseDown={(e) => e.preventDefault()}
+              onClick={onSaveAs}
+              className="w-8 h-8 rounded-none border border-transparent flex items-center justify-center text-text hover:bg-hover active:bg-active transition-colors duration-100 cursor-pointer outline-none focus-visible:ring-2 focus-visible:ring-text focus-visible:ring-offset-1 focus-visible:ring-offset-surface"
+              aria-label="Save note as"
+            >
+              {/* Save As = Save icon with a small plus indicator in the top-right corner */}
+              <span className="relative inline-flex">
+                <Save size={15} strokeWidth={2.2} />
+                <span className="absolute -top-1 -right-1 text-[9px] font-bold leading-none">+</span>
+              </span>
+            </button>
+          </Tooltip>
+        </div>
+
+        {/* Subtle Inner Divider after file actions */}
+        <div className="w-px h-5 bg-border-subtle mx-1" />
+
         {/* GROUP 1: History Controls (Undo & Redo) */}
         <div className="flex items-center gap-0.5">
           <Tooltip content="Undo (Ctrl+Z)">
