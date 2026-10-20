@@ -28,18 +28,18 @@
 
   /* Interactive States */
   --hover: #f4f4f5;
-  --active: #000000;
-  --active-text: #ffffff;
+  --active: #e5e5e5;
+  --active-text: #000000;
 
-  /* Per-Theme Highlight Tokens (Light Theme: luminous pastels + contrast black) */
+  /* Per-Theme Highlight Tokens (Light Theme: luminous readable pastels) */
   --highlight-yellow: #fef08a;
   --highlight-green: #bbf7d0;
   --highlight-pink: #fbcfe8;
   --highlight-blue: #bfdbfe;
   --highlight-orange: #fed7aa;
   --highlight-purple: #e9d5ff;
-  --highlight-contrast: #18181b;
-  --highlight-contrast-text: #ffffff;
+  --highlight-red: #fca5a5;
+  --highlight-cyan: #a5f3fc;
 
   /* Sharp Geometry (0px radius) */
   --radius-sm: 0px;
@@ -67,18 +67,18 @@
 
   /* Interactive States */
   --hover: #18181b;
-  --active: #ffffff;
-  --active-text: #000000;
+  --active: #27272a;
+  --active-text: #ffffff;
 
-  /* Per-Theme Highlight Tokens (Dark Theme: rich muted tints + contrast white) */
-  --highlight-yellow: #713f12;
+  /* Per-Theme Highlight Tokens (Dark Theme: rich luminous tints) */
+  --highlight-yellow: #854d0e;
   --highlight-green: #14532d;
   --highlight-pink: #831843;
   --highlight-blue: #1e3a8a;
   --highlight-orange: #7c2d12;
   --highlight-purple: #581c87;
-  --highlight-contrast: #f4f4f5;
-  --highlight-contrast-text: #000000;
+  --highlight-red: #881337;
+  --highlight-cyan: #155e75;
 }
 
 /* ==========================================================================
@@ -108,7 +108,8 @@
   --color-highlight-blue: var(--highlight-blue);
   --color-highlight-orange: var(--highlight-orange);
   --color-highlight-purple: var(--highlight-purple);
-  --color-highlight-contrast: var(--highlight-contrast);
+  --color-highlight-red: var(--highlight-red);
+  --color-highlight-cyan: var(--highlight-cyan);
 
   /* Zero radius */
   --radius-sm: 0px;

@@ -171,43 +171,27 @@
   -webkit-box-decoration-break: clone;
 }
 
-/* Light Theme: pastel highlights keep high-contrast black text; contrast mark uses white text */
+/* Light Theme: All highlighted text is crisp, high-contrast solid black */
 :root .tiptap mark,
 [data-theme="light"] .tiptap mark {
-  color: #000000;
+  color: #000000 !important;
 }
 
-:root .tiptap mark[data-color*="contrast"],
-:root .tiptap mark[style*="--highlight-contrast"],
-[data-theme="light"] .tiptap mark[data-color*="contrast"],
-[data-theme="light"] .tiptap mark[style*="--highlight-contrast"],
-:root .tiptap mark[data-color="#0f172a"],
-:root .tiptap mark[data-color="#000000"],
-[data-theme="light"] .tiptap mark[data-color="#0f172a"],
-[data-theme="light"] .tiptap mark[data-color="#000000"] {
-  color: #ffffff;
-}
-
-/* Dark Theme: rich deep highlights have crisp white text; contrast mark has black text */
+/* Dark Theme: All highlighted text is crisp, high-contrast pure white */
 [data-theme="dark"] .tiptap mark {
-  color: #ffffff;
+  color: #ffffff !important;
 }
 
-[data-theme="dark"] .tiptap mark[data-color*="contrast"],
-[data-theme="dark"] .tiptap mark[style*="--highlight-contrast"],
-[data-theme="dark"] .tiptap mark[data-color="#f4f4f5"],
-[data-theme="dark"] .tiptap mark[data-color="#ffffff"] {
-  color: #000000;
+/* Fallback: Any legacy dark/black highlights always display white text */
+.tiptap mark[data-color="#000000"],
+.tiptap mark[data-color="#0f172a"],
+.tiptap mark[style*="#000000"],
+.tiptap mark[style*="rgb(0, 0, 0)"],
+.tiptap mark[style*="rgb(15, 23, 42)"],
+.tiptap mark[data-color="#18181b"],
+.tiptap mark[style*="#18181b"] {
+  color: #ffffff !important;
 }
 
-/* Fallback: Pastel hex colors always keep dark text for readability */
-.tiptap mark[data-color="#fef08a"],
-.tiptap mark[data-color="#bbf7d0"],
-.tiptap mark[data-color="#fbcfe8"],
-.tiptap mark[data-color="#bfdbfe"],
-.tiptap mark[data-color="#fed7aa"],
-.tiptap mark[data-color="#e9d5ff"] {
-  color: #000000;
-}
 
 

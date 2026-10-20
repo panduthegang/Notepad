@@ -153,10 +153,16 @@ const HIGHLIGHT_COLORS = [
     checkColor: "text-text",
   },
   {
-    name: "Invert",
-    value: "var(--highlight-contrast)",
-    preview: "var(--highlight-contrast)",
-    checkColor: "text-surface",
+    name: "Red",
+    value: "var(--highlight-red)",
+    preview: "var(--highlight-red)",
+    checkColor: "text-text",
+  },
+  {
+    name: "Cyan",
+    value: "var(--highlight-cyan)",
+    preview: "var(--highlight-cyan)",
+    checkColor: "text-text",
   },
 ];
 
