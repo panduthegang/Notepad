@@ -94,7 +94,6 @@ export default function CustomSelect({
             ? "bg-hover font-semibold"
             : "hover:bg-hover active:bg-hover"
         }`}
-        title={title}
         aria-label={ariaLabel || title}
         aria-haspopup="listbox"
         aria-expanded={isOpen}

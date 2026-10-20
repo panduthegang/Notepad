@@ -14,9 +14,11 @@ import {
   Check,
   Sun,
   Moon,
+  Highlighter,
 } from "lucide-react";
 
 import CustomSelect, { CustomSelectOption } from "./CustomSelect";
+import Tooltip from "./Tooltip";
 
 interface ToolbarProps {
   // TipTap editor instance passed down from App
@@ -275,28 +277,31 @@ export default function Toolbar({ editor, theme = "light", onToggleTheme }: Tool
       <div className="inline-flex flex-wrap items-center gap-1 px-2.5 py-1.5 bg-surface border border-border shadow-[3px_3px_0px_var(--border)] rounded-none transition-colors duration-150">
         {/* GROUP 1: History Controls (Undo & Redo) */}
         <div className="flex items-center gap-0.5">
-          <button
-            type="button"
-            onMouseDown={(e) => e.preventDefault()}
-            onClick={() => editor.chain().focus().undo().run()}
-            disabled={!canUndo}
-            className="w-8 h-8 rounded-none border border-transparent flex items-center justify-center text-text hover:bg-hover active:bg-active disabled:opacity-20 disabled:pointer-events-none transition-colors duration-100 cursor-pointer outline-none focus-visible:ring-2 focus-visible:ring-text focus-visible:ring-offset-1 focus-visible:ring-offset-surface"
-            title="Undo (Ctrl+Z)"
-            aria-label="Undo"
-          >
-            <Undo size={15} strokeWidth={2.2} />
-          </button>
-          <button
-            type="button"
-            onMouseDown={(e) => e.preventDefault()}
-            onClick={() => editor.chain().focus().redo().run()}
-            disabled={!canRedo}
-            className="w-8 h-8 rounded-none border border-transparent flex items-center justify-center text-text hover:bg-hover active:bg-active disabled:opacity-20 disabled:pointer-events-none transition-colors duration-100 cursor-pointer outline-none focus-visible:ring-2 focus-visible:ring-text focus-visible:ring-offset-1 focus-visible:ring-offset-surface"
-            title="Redo (Ctrl+Y)"
-            aria-label="Redo"
-          >
-            <Redo size={15} strokeWidth={2.2} />
-          </button>
+          <Tooltip content="Undo (Ctrl+Z)">
+            <button
+              type="button"
+              onMouseDown={(e) => e.preventDefault()}
+              onClick={() => editor.chain().focus().undo().run()}
+              disabled={!canUndo}
+              className="w-8 h-8 rounded-none border border-transparent flex items-center justify-center text-text hover:bg-hover active:bg-active disabled:opacity-20 disabled:pointer-events-none transition-colors duration-100 cursor-pointer outline-none focus-visible:ring-2 focus-visible:ring-text focus-visible:ring-offset-1 focus-visible:ring-offset-surface"
+              aria-label="Undo"
+            >
+              <Undo size={15} strokeWidth={2.2} />
+            </button>
+          </Tooltip>
+
+          <Tooltip content="Redo (Ctrl+Y)">
+            <button
+              type="button"
+              onMouseDown={(e) => e.preventDefault()}
+              onClick={() => editor.chain().focus().redo().run()}
+              disabled={!canRedo}
+              className="w-8 h-8 rounded-none border border-transparent flex items-center justify-center text-text hover:bg-hover active:bg-active disabled:opacity-20 disabled:pointer-events-none transition-colors duration-100 cursor-pointer outline-none focus-visible:ring-2 focus-visible:ring-text focus-visible:ring-offset-1 focus-visible:ring-offset-surface"
+              aria-label="Redo"
+            >
+              <Redo size={15} strokeWidth={2.2} />
+            </button>
+          </Tooltip>
         </div>
 
         {/* Subtle Inner Divider */}
@@ -316,7 +321,6 @@ export default function Toolbar({ editor, theme = "light", onToggleTheme }: Tool
             }}
             options={FONT_FAMILY_OPTIONS}
             placeholder="Inter"
-            title="Font Family"
             ariaLabel="Font Family"
             minWidth="105px"
           />
@@ -333,7 +337,6 @@ export default function Toolbar({ editor, theme = "light", onToggleTheme }: Tool
             }}
             options={FONT_SIZE_OPTIONS}
             placeholder="16px"
-            title="Font Size"
             ariaLabel="Font Size"
             minWidth="70px"
           />
@@ -344,48 +347,53 @@ export default function Toolbar({ editor, theme = "light", onToggleTheme }: Tool
 
         {/* GROUP 3: Bold, Italic, Underline */}
         <div className="flex items-center gap-0.5">
-          <button
-            type="button"
-            onMouseDown={(e) => e.preventDefault()}
-            onClick={() => editor.chain().focus().toggleBold().run()}
-            className={`w-8 h-8 rounded-none border border-transparent flex items-center justify-center transition-colors duration-100 cursor-pointer outline-none focus-visible:ring-2 focus-visible:ring-text focus-visible:ring-offset-1 focus-visible:ring-offset-surface ${
-              isBold
-                ? "bg-text text-surface font-semibold"
-                : "text-text hover:bg-hover active:bg-active"
-            }`}
-            title="Bold (Ctrl+B)"
-            aria-label="Bold"
-          >
-            <Bold size={15} strokeWidth={2.4} />
-          </button>
-          <button
-            type="button"
-            onMouseDown={(e) => e.preventDefault()}
-            onClick={() => editor.chain().focus().toggleItalic().run()}
-            className={`w-8 h-8 rounded-none border border-transparent flex items-center justify-center transition-colors duration-100 cursor-pointer outline-none focus-visible:ring-2 focus-visible:ring-text focus-visible:ring-offset-1 focus-visible:ring-offset-surface ${
-              isItalic
-                ? "bg-text text-surface font-semibold"
-                : "text-text hover:bg-hover active:bg-active"
-            }`}
-            title="Italic (Ctrl+I)"
-            aria-label="Italic"
-          >
-            <Italic size={15} strokeWidth={2.4} />
-          </button>
-          <button
-            type="button"
-            onMouseDown={(e) => e.preventDefault()}
-            onClick={() => editor.chain().focus().toggleUnderline().run()}
-            className={`w-8 h-8 rounded-none border border-transparent flex items-center justify-center transition-colors duration-100 cursor-pointer outline-none focus-visible:ring-2 focus-visible:ring-text focus-visible:ring-offset-1 focus-visible:ring-offset-surface ${
-              isUnderline
-                ? "bg-text text-surface font-semibold"
-                : "text-text hover:bg-hover active:bg-active"
-            }`}
-            title="Underline (Ctrl+U)"
-            aria-label="Underline"
-          >
-            <Underline size={15} strokeWidth={2.4} />
-          </button>
+          <Tooltip content="Bold (Ctrl+B)">
+            <button
+              type="button"
+              onMouseDown={(e) => e.preventDefault()}
+              onClick={() => editor.chain().focus().toggleBold().run()}
+              className={`w-8 h-8 rounded-none border border-transparent flex items-center justify-center transition-colors duration-100 cursor-pointer outline-none focus-visible:ring-2 focus-visible:ring-text focus-visible:ring-offset-1 focus-visible:ring-offset-surface ${
+                isBold
+                  ? "bg-text text-surface font-semibold"
+                  : "text-text hover:bg-hover active:bg-active"
+              }`}
+              aria-label="Bold"
+            >
+              <Bold size={15} strokeWidth={2.4} />
+            </button>
+          </Tooltip>
+
+          <Tooltip content="Italic (Ctrl+I)">
+            <button
+              type="button"
+              onMouseDown={(e) => e.preventDefault()}
+              onClick={() => editor.chain().focus().toggleItalic().run()}
+              className={`w-8 h-8 rounded-none border border-transparent flex items-center justify-center transition-colors duration-100 cursor-pointer outline-none focus-visible:ring-2 focus-visible:ring-text focus-visible:ring-offset-1 focus-visible:ring-offset-surface ${
+                isItalic
+                  ? "bg-text text-surface font-semibold"
+                  : "text-text hover:bg-hover active:bg-active"
+              }`}
+              aria-label="Italic"
+            >
+              <Italic size={15} strokeWidth={2.4} />
+            </button>
+          </Tooltip>
+
+          <Tooltip content="Underline (Ctrl+U)">
+            <button
+              type="button"
+              onMouseDown={(e) => e.preventDefault()}
+              onClick={() => editor.chain().focus().toggleUnderline().run()}
+              className={`w-8 h-8 rounded-none border border-transparent flex items-center justify-center transition-colors duration-100 cursor-pointer outline-none focus-visible:ring-2 focus-visible:ring-text focus-visible:ring-offset-1 focus-visible:ring-offset-surface ${
+                isUnderline
+                  ? "bg-text text-surface font-semibold"
+                  : "text-text hover:bg-hover active:bg-active"
+              }`}
+              aria-label="Underline"
+            >
+              <Underline size={15} strokeWidth={2.4} />
+            </button>
+          </Tooltip>
         </div>
 
         {/* Subtle Inner Divider */}
@@ -395,25 +403,26 @@ export default function Toolbar({ editor, theme = "light", onToggleTheme }: Tool
         <div className="flex items-center gap-1.5">
           {/* Text Color Picker Trigger with Popover */}
           <div className="relative" ref={colorPickerRef}>
-            <button
-              type="button"
-              onMouseDown={(e) => e.preventDefault()}
-              onClick={() => setIsColorPickerOpen((prev) => !prev)}
-              className={`w-8 h-8 rounded-none border flex flex-col items-center justify-center transition-colors duration-100 cursor-pointer outline-none select-none focus-visible:ring-2 focus-visible:ring-text focus-visible:ring-offset-1 focus-visible:ring-offset-surface ${
-                isColorPickerOpen
-                  ? "border-text bg-hover text-text"
-                  : "border-transparent text-text hover:bg-hover active:bg-active"
-              }`}
-              title="Text Color"
-              aria-label="Text Color"
-              aria-expanded={isColorPickerOpen}
-            >
-              <Baseline size={14} strokeWidth={2.4} />
-              <div
-                className="w-3.5 h-[2px] mt-0.5"
-                style={{ backgroundColor: activeTextColor || "var(--text)" }}
-              />
-            </button>
+            <Tooltip content="Text Color">
+              <button
+                type="button"
+                onMouseDown={(e) => e.preventDefault()}
+                onClick={() => setIsColorPickerOpen((prev) => !prev)}
+                className={`w-8 h-8 rounded-none border flex flex-col items-center justify-center transition-colors duration-100 cursor-pointer outline-none select-none focus-visible:ring-2 focus-visible:ring-text focus-visible:ring-offset-1 focus-visible:ring-offset-surface ${
+                  isColorPickerOpen
+                    ? "border-text bg-hover text-text"
+                    : "border-transparent text-text hover:bg-hover active:bg-active"
+                }`}
+                aria-label="Text Color"
+                aria-expanded={isColorPickerOpen}
+              >
+                <Baseline size={14} strokeWidth={2.4} />
+                <div
+                  className="w-3.5 h-[2px] mt-0.5"
+                  style={{ backgroundColor: activeTextColor || "var(--text)" }}
+                />
+              </button>
+            </Tooltip>
 
             {/* Sharp Architectural Color Palette Popover */}
             {isColorPickerOpen && (
@@ -473,7 +482,6 @@ export default function Toolbar({ editor, theme = "light", onToggleTheme }: Tool
                           backgroundColor:
                             col.value === "" ? "var(--text)" : col.preview,
                         }}
-                        title={col.name}
                         aria-label={col.name}
                       >
                         {isSelected && (
@@ -491,40 +499,66 @@ export default function Toolbar({ editor, theme = "light", onToggleTheme }: Tool
             )}
           </div>
 
-          {/* Colored Highlight Swatches - Sharp Squares with Per-Theme Tokens */}
+          {/* Subtle Inner Divider between Text Color and Highlight Colors */}
+          <div className="w-px h-5 bg-border-subtle mx-0.5" />
+
+          {/* Highlight Indicator Button */}
+          <Tooltip content={activeHighlightColor ? "Remove Highlight" : "Text Highlight"}>
+            <button
+              type="button"
+              onMouseDown={(e) => e.preventDefault()}
+              onClick={() => {
+                if (activeHighlightColor) {
+                  editor.chain().focus().unsetHighlight().run();
+                } else {
+                  editor.chain().focus().toggleHighlight({ color: "var(--highlight-yellow)" }).run();
+                }
+              }}
+              className={`w-8 h-8 rounded-none border border-transparent flex items-center justify-center transition-colors duration-100 cursor-pointer outline-none focus-visible:ring-2 focus-visible:ring-text focus-visible:ring-offset-1 focus-visible:ring-offset-surface ${
+                activeHighlightColor
+                  ? "bg-text text-surface font-semibold"
+                  : "text-text hover:bg-hover active:bg-active"
+              }`}
+              aria-label="Text Highlight"
+            >
+              <Highlighter size={15} strokeWidth={2.2} />
+            </button>
+          </Tooltip>
+
+          {/* Colored Highlight Swatches - Sharp Squares with Custom Tooltips */}
           <div className="flex items-center gap-1 pl-0.5">
             {HIGHLIGHT_COLORS.map((color) => {
               const isCurrentColorActive = activeHighlightColor === color.value;
 
               return (
-                <button
-                  key={color.name}
-                  type="button"
-                  onMouseDown={(e) => e.preventDefault()}
-                  onClick={() =>
-                    editor
-                      .chain()
-                      .focus()
-                      .toggleHighlight({ color: color.value })
-                      .run()
-                  }
-                  className={`w-5 h-5 rounded-none border border-border flex items-center justify-center cursor-pointer transition-transform duration-100 hover:scale-110 active:scale-95 outline-none select-none focus-visible:ring-2 focus-visible:ring-text ${
-                    isCurrentColorActive
-                      ? "ring-2 ring-text ring-offset-1 ring-offset-surface scale-105"
-                      : ""
-                  }`}
-                  style={{ backgroundColor: color.preview }}
-                  title={`Highlight ${color.name} (click to toggle)`}
-                  aria-label={`Highlight ${color.name}`}
-                >
-                  {isCurrentColorActive && (
-                    <Check
-                      size={10}
-                      strokeWidth={3}
-                      className={color.checkColor}
-                    />
-                  )}
-                </button>
+                <Tooltip key={color.name} content={`Highlight ${color.name}`}>
+                  <button
+                    type="button"
+                    onMouseDown={(e) => e.preventDefault()}
+                    onClick={() =>
+                      editor
+                        .chain()
+                        .focus()
+                        .toggleHighlight({ color: color.value })
+                        .run()
+                    }
+                    className={`w-5 h-5 rounded-none border border-border flex items-center justify-center cursor-pointer transition-transform duration-100 hover:scale-110 active:scale-95 outline-none select-none focus-visible:ring-2 focus-visible:ring-text ${
+                      isCurrentColorActive
+                        ? "ring-2 ring-text ring-offset-1 ring-offset-surface scale-105"
+                        : ""
+                    }`}
+                    style={{ backgroundColor: color.preview }}
+                    aria-label={`Highlight ${color.name}`}
+                  >
+                    {isCurrentColorActive && (
+                      <Check
+                        size={10}
+                        strokeWidth={3}
+                        className={color.checkColor}
+                      />
+                    )}
+                  </button>
+                </Tooltip>
               );
             })}
           </div>
@@ -535,82 +569,90 @@ export default function Toolbar({ editor, theme = "light", onToggleTheme }: Tool
 
         {/* GROUP 5: Text Alignment (Left, Center, Right, Justify) */}
         <div className="flex items-center gap-0.5">
-          <button
-            type="button"
-            onMouseDown={(e) => e.preventDefault()}
-            onClick={() => editor.chain().focus().setTextAlign("left").run()}
-            className={`w-8 h-8 rounded-none border border-transparent flex items-center justify-center transition-colors duration-100 cursor-pointer outline-none focus-visible:ring-2 focus-visible:ring-text focus-visible:ring-offset-1 focus-visible:ring-offset-surface ${
-              currentAlignment === "left"
-                ? "bg-text text-surface font-semibold"
-                : "text-text hover:bg-hover active:bg-active"
-            }`}
-            title="Align Left"
-            aria-label="Align Left"
-          >
-            <AlignLeft size={15} strokeWidth={2.2} />
-          </button>
-          <button
-            type="button"
-            onMouseDown={(e) => e.preventDefault()}
-            onClick={() => editor.chain().focus().setTextAlign("center").run()}
-            className={`w-8 h-8 rounded-none border border-transparent flex items-center justify-center transition-colors duration-100 cursor-pointer outline-none focus-visible:ring-2 focus-visible:ring-text focus-visible:ring-offset-1 focus-visible:ring-offset-surface ${
-              currentAlignment === "center"
-                ? "bg-text text-surface font-semibold"
-                : "text-text hover:bg-hover active:bg-active"
-            }`}
-            title="Align Center"
-            aria-label="Align Center"
-          >
-            <AlignCenter size={15} strokeWidth={2.2} />
-          </button>
-          <button
-            type="button"
-            onMouseDown={(e) => e.preventDefault()}
-            onClick={() => editor.chain().focus().setTextAlign("right").run()}
-            className={`w-8 h-8 rounded-none border border-transparent flex items-center justify-center transition-colors duration-100 cursor-pointer outline-none focus-visible:ring-2 focus-visible:ring-text focus-visible:ring-offset-1 focus-visible:ring-offset-surface ${
-              currentAlignment === "right"
-                ? "bg-text text-surface font-semibold"
-                : "text-text hover:bg-hover active:bg-active"
-            }`}
-            title="Align Right"
-            aria-label="Align Right"
-          >
-            <AlignRight size={15} strokeWidth={2.2} />
-          </button>
-          <button
-            type="button"
-            onMouseDown={(e) => e.preventDefault()}
-            onClick={() => editor.chain().focus().setTextAlign("justify").run()}
-            className={`w-8 h-8 rounded-none border border-transparent flex items-center justify-center transition-colors duration-100 cursor-pointer outline-none focus-visible:ring-2 focus-visible:ring-text focus-visible:ring-offset-1 focus-visible:ring-offset-surface ${
-              currentAlignment === "justify"
-                ? "bg-text text-surface font-semibold"
-                : "text-text hover:bg-hover active:bg-active"
-            }`}
-            title="Justify"
-            aria-label="Justify"
-          >
-            <AlignJustify size={15} strokeWidth={2.2} />
-          </button>
+          <Tooltip content="Align Left">
+            <button
+              type="button"
+              onMouseDown={(e) => e.preventDefault()}
+              onClick={() => editor.chain().focus().setTextAlign("left").run()}
+              className={`w-8 h-8 rounded-none border border-transparent flex items-center justify-center transition-colors duration-100 cursor-pointer outline-none focus-visible:ring-2 focus-visible:ring-text focus-visible:ring-offset-1 focus-visible:ring-offset-surface ${
+                currentAlignment === "left"
+                  ? "bg-text text-surface font-semibold"
+                  : "text-text hover:bg-hover active:bg-active"
+              }`}
+              aria-label="Align Left"
+            >
+              <AlignLeft size={15} strokeWidth={2.2} />
+            </button>
+          </Tooltip>
+
+          <Tooltip content="Align Center">
+            <button
+              type="button"
+              onMouseDown={(e) => e.preventDefault()}
+              onClick={() => editor.chain().focus().setTextAlign("center").run()}
+              className={`w-8 h-8 rounded-none border border-transparent flex items-center justify-center transition-colors duration-100 cursor-pointer outline-none focus-visible:ring-2 focus-visible:ring-text focus-visible:ring-offset-1 focus-visible:ring-offset-surface ${
+                currentAlignment === "center"
+                  ? "bg-text text-surface font-semibold"
+                  : "text-text hover:bg-hover active:bg-active"
+              }`}
+              aria-label="Align Center"
+            >
+              <AlignCenter size={15} strokeWidth={2.2} />
+            </button>
+          </Tooltip>
+
+          <Tooltip content="Align Right">
+            <button
+              type="button"
+              onMouseDown={(e) => e.preventDefault()}
+              onClick={() => editor.chain().focus().setTextAlign("right").run()}
+              className={`w-8 h-8 rounded-none border border-transparent flex items-center justify-center transition-colors duration-100 cursor-pointer outline-none focus-visible:ring-2 focus-visible:ring-text focus-visible:ring-offset-1 focus-visible:ring-offset-surface ${
+                currentAlignment === "right"
+                  ? "bg-text text-surface font-semibold"
+                  : "text-text hover:bg-hover active:bg-active"
+              }`}
+              aria-label="Align Right"
+            >
+              <AlignRight size={15} strokeWidth={2.2} />
+            </button>
+          </Tooltip>
+
+          <Tooltip content="Justify">
+            <button
+              type="button"
+              onMouseDown={(e) => e.preventDefault()}
+              onClick={() => editor.chain().focus().setTextAlign("justify").run()}
+              className={`w-8 h-8 rounded-none border border-transparent flex items-center justify-center transition-colors duration-100 cursor-pointer outline-none focus-visible:ring-2 focus-visible:ring-text focus-visible:ring-offset-1 focus-visible:ring-offset-surface ${
+                currentAlignment === "justify"
+                  ? "bg-text text-surface font-semibold"
+                  : "text-text hover:bg-hover active:bg-active"
+              }`}
+              aria-label="Justify"
+            >
+              <AlignJustify size={15} strokeWidth={2.2} />
+            </button>
+          </Tooltip>
         </div>
 
         {/* GROUP 6: Theme Toggle (Light / Dark) */}
         {onToggleTheme && (
           <>
             <div className="w-px h-5 bg-border-subtle mx-1" />
-            <button
-              type="button"
-              onMouseDown={(e) => e.preventDefault()}
-              onClick={onToggleTheme}
-              className="w-8 h-8 rounded-none border border-transparent flex items-center justify-center text-text hover:bg-hover active:bg-active transition-colors duration-100 cursor-pointer outline-none focus-visible:ring-2 focus-visible:ring-text focus-visible:ring-offset-1 focus-visible:ring-offset-surface"
-              title={`Switch to ${theme === "light" ? "Dark" : "Light"} mode`}
-              aria-label="Toggle theme"
-            >
-              {theme === "light" ? (
-                <Moon size={15} strokeWidth={2.2} />
-              ) : (
-                <Sun size={15} strokeWidth={2.2} />
-              )}
-            </button>
+            <Tooltip content={theme === "light" ? "Switch to Dark mode" : "Switch to Light mode"}>
+              <button
+                type="button"
+                onMouseDown={(e) => e.preventDefault()}
+                onClick={onToggleTheme}
+                className="w-8 h-8 rounded-none border border-transparent flex items-center justify-center text-text hover:bg-hover active:bg-active transition-colors duration-100 cursor-pointer outline-none focus-visible:ring-2 focus-visible:ring-text focus-visible:ring-offset-1 focus-visible:ring-offset-surface"
+                aria-label="Toggle theme"
+              >
+                {theme === "light" ? (
+                  <Moon size={15} strokeWidth={2.2} />
+                ) : (
+                  <Sun size={15} strokeWidth={2.2} />
+                )}
+              </button>
+            </Tooltip>
           </>
         )}
       </div>
